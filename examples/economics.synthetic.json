@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "baseline": {"cpu_hps": 300, "wall_watts": 5},
+  "dual": {
+    "cpu_hps": 280,
+    "npu_effective_mac_s": 5000000000,
+    "throughput_basis": "completed_nonstale_macs_per_wall_second",
+    "wall_watts": 6
+  },
+  "market": {
+    "prl": {
+      "snapshot_id": "synthetic-example",
+      "observed_at_utc": "2026-01-01T00:00:00Z",
+      "reward_per_mac_day": 0.00000000000001,
+      "cad_per_coin": 2,
+      "after_pool_fee": true
+    },
+    "xmr": {
+      "snapshot_id": "synthetic-example",
+      "observed_at_utc": "2026-01-01T00:00:00Z",
+      "reward_per_hash_day": 0.0000001,
+      "cad_per_coin": 400,
+      "after_pool_fee": true
+    }
+  },
+  "developer_fee_fraction": 0.01,
+  "electricity_cad_per_kwh": 0.12
+}

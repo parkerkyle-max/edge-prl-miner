@@ -1,0 +1,24 @@
+[workspace]
+
+[package]
+name = "pearl-edge-proof"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "pearl_edge_proof"
+crate-type = ["cdylib"]
+
+[dependencies]
+pearl-blake3 = { path = @PEARL_BLAKE3_PATH@, features = ["serde"] }
+zk-pow = { path = @ZK_POW_PATH@ }
+bincode = "1.3.3"
+blake3 = "1.8"
+anyhow = "1"
+rayon = "1"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+panic = "unwind"

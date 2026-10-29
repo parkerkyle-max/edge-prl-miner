@@ -1,0 +1,216 @@
+{
+  "schema": "edge-prl-proof-cache-benchmark-v1",
+  "date_utc": "2026-10-29",
+  "device_class": "qualified 4 GB Allwinner A733 / VIPLite v2 Linux AArch64",
+  "source_archive_sha256": "5f5646b6d2345ad8098ec9bbba868e27e3589ec101b5f2e4825d01fabed34742",
+  "tested_engine_files_unchanged": true,
+  "tested_engine_sha256": {
+    "engine/__init__.py": "82e64265024767a16696ead2ec3a759dc4bb42ea558992fcc3a424158566bc76",
+    "engine/backend/__init__.py": "e9882055d967768ff3634006c5d1a0bf978d053dc372166b852d0513f8f74634",
+    "engine/backend/batch_backend.py": "9161bd344866a30aa5b15a690b5195a77a485de5df28e00d05eb059ff0f00dc1",
+    "engine/backend/selection.py": "0a160f5af37d730aec170216c87d7117cb2091eb0c922167bd4f61d8e5a07ac4",
+    "engine/configuration.py": "eabec492be919446282c115905bfd34809092409c75cff33653f10c4c99456a0",
+    "engine/devfee.py": "1d1ce1c1eef7fe41d8f1d1e6bf9288f6a299a37ee09870d1b630972f4636e8fb",
+    "engine/miner.py": "5c0c2d0ec9c6c6f48d70bd03460816462edaf3ce212a317c191c4fe695ac1d42",
+    "engine/pool/__init__.py": "d6469b1966762f51a624a4790cc5a56be76c630b1afb83ba0a56dcb158630c9b",
+    "engine/pool/kryptex.py": "67938d233d25072f6be579a9611403495513c03bae86c5f99347e580a550bb72",
+    "engine/pool/suprnova.py": "566e1198eb61c5df889dcf3241b1d022e0f089e526703065e6f956ec1d5154f7",
+    "engine/proof/__init__.py": "8a9fb4330292945b52dbb8ef39cb4cf527cc1d601d111f57c232b9b062b8e065",
+    "engine/proof/host-reference.json": "0a4bd7dad54e14679bec92b063993fd54114b533796cba32011787759843957d",
+    "engine/proof/liveproof.py": "ae7def1011f75da7cb12ea5f290b03886b225cf195b2319a454675f2b13304bd",
+    "engine/runtime_guard.py": "80c73e2613ada205ccf453a71de0fd794e0395cc00dc97f2347c79db641039bb"
+  },
+  "native_proof_sha256": "aededc2ae1f8b1a6dbd493670b0a004496d3ffd816026edcc582e9f60e96527c",
+  "controlled_comparison": {
+    "scope": "same prepared full PRL job; proof construction only; no pool submissions",
+    "status": "PASS",
+    "preparation_seconds": 3.578662605024874,
+    "cache_create_seconds": 1.4041851870715618,
+    "comparisons": [
+      {
+        "row": 0,
+        "col": 0,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "1fd19533e80787d8ceceda0e0da44961695f43794c18c6900d58c535940eb996",
+        "legacy": {
+          "wall_seconds": 1.1088915009750053,
+          "cpu_seconds": 1.108432787
+        },
+        "cached": {
+          "wall_seconds": 0.0064405250595882535,
+          "cpu_seconds": 0.0064653750000003285
+        }
+      },
+      {
+        "row": 31,
+        "col": 64,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "f8595af8e5fa69bdf8f925fcdd76897c16045965f820a8572f9a6f2d349539c3",
+        "cached": {
+          "wall_seconds": 0.003669681027531624,
+          "cpu_seconds": 0.0037026250000007366
+        },
+        "legacy": {
+          "wall_seconds": 1.041782325017266,
+          "cpu_seconds": 1.0417090799999995
+        }
+      },
+      {
+        "row": 64,
+        "col": 192,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "26bb7489a9377718e3cf3fb8d0650768b81f6b31ead412dea975dcf81f57571b",
+        "legacy": {
+          "wall_seconds": 1.0494954379973933,
+          "cpu_seconds": 1.0496200370000004
+        },
+        "cached": {
+          "wall_seconds": 0.008122864994220436,
+          "cpu_seconds": 0.008154208999999746
+        }
+      },
+      {
+        "row": 95,
+        "col": 256,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "c2d0c03555c1d7db8ef9f35a622d3c81cc1a725da0a9fa30b6203cd30eede024",
+        "cached": {
+          "wall_seconds": 0.008164740051142871,
+          "cpu_seconds": 0.008201291000000666
+        },
+        "legacy": {
+          "wall_seconds": 1.0429501219186932,
+          "cpu_seconds": 1.0428678700000003
+        }
+      },
+      {
+        "row": 223,
+        "col": 0,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "d86716ddee22e959695898b7617ec57c1fb5da9c751851f4a6b6a4a939091e93",
+        "legacy": {
+          "wall_seconds": 1.043017080053687,
+          "cpu_seconds": 1.0429044130000005
+        },
+        "cached": {
+          "wall_seconds": 0.0054927709279581904,
+          "cpu_seconds": 0.005633875000000899
+        }
+      },
+      {
+        "row": 256,
+        "col": 16128,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "b2821abc355a0bacfec1464af499bad66c1a527e5400265c2ac0809b5cb4bb71",
+        "cached": {
+          "wall_seconds": 0.003936680965125561,
+          "cpu_seconds": 0.003972499999999712
+        },
+        "legacy": {
+          "wall_seconds": 1.0396375249838457,
+          "cpu_seconds": 1.0395354539999992
+        }
+      },
+      {
+        "row": 16320,
+        "col": 16256,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "3f41045c82f336fc00afbecceac25d712fe27b33db0333abe4e8dca628b20ea0",
+        "legacy": {
+          "wall_seconds": 1.0409655710682273,
+          "cpu_seconds": 1.0408488299999998
+        },
+        "cached": {
+          "wall_seconds": 0.003770973067730665,
+          "cpu_seconds": 0.0037959159999996217
+        }
+      },
+      {
+        "row": 16351,
+        "col": 16320,
+        "byte_identical": true,
+        "official_verified": true,
+        "proof_sha256": "70e54ae9b44e8d3e35eb6521d1b79e776b99aa1721945d948105748eec8f89b9",
+        "cached": {
+          "wall_seconds": 0.006894026999361813,
+          "cpu_seconds": 0.006940584000000527
+        },
+        "legacy": {
+          "wall_seconds": 1.0433349560480565,
+          "cpu_seconds": 1.0422468289999998
+        }
+      }
+    ],
+    "median_legacy_seconds": 1.0429836009861901,
+    "median_cached_seconds": 0.005966647993773222,
+    "source_sha256": "83bc3f8b5539c878bc7c780beaaac3932acdf702f6d86346c57518e949c5a149",
+    "wrapper_sha256": "ae7def1011f75da7cb12ea5f290b03886b225cf195b2319a454675f2b13304bd",
+    "proof_hot_call_ratio": 174.8022678855272,
+    "approximate_cache_amortization_proofs": 1.354061939893696,
+    "accounting_note": "Hot proof call only; creation cost is paid per job. Not an end-to-end mining speedup."
+  },
+  "live_trial": {
+    "runtime_limit_seconds": 180,
+    "dev_fee_percent": 0,
+    "independent_reference_hashes": 64,
+    "official_easy_target_proofs": 6,
+    "all_offline_proofs_valid": true,
+    "accepted_replies": 22,
+    "recorded_rejected_replies": 0,
+    "independent_pool_worker_observed": true,
+    "maximum_sampled_temperature_c": 67.26,
+    "owned_processes_remaining": 0,
+    "cpu_miner_same_process": true,
+    "cpu_miner_rolling_hps_before": 298.0,
+    "cpu_miner_rolling_hps_during_min": 278.8,
+    "cpu_miner_rolling_hps_during_max": 280.7,
+    "cpu_miner_rolling_hps_during_median": 279.6,
+    "cpu_miner_rolling_hps_immediately_after": 280.4,
+    "cpu_miner_rolling_hps_after_recovery": 297.6,
+    "last_saved_effective_logical_GMAC_s": 0.7978424392559523,
+    "last_saved_phase_timings": {
+      "calls": {
+        "candidate_filter": 530,
+        "job_prepare": 5,
+        "native_scan_and_adapter": 534,
+        "npu_initialize": 1,
+        "proof_build": 21,
+        "proof_verify": 21,
+        "submit_including_verify": 21
+      },
+      "native_cumulative_profile": {
+        "driver_wall_ns": 134567586553,
+        "scans": 534,
+        "thread_cpu_ns": 20380594316,
+        "wall_ns": 152785767243
+      },
+      "scope": "Current process/role only; timers overlap as documented; not NPU-only hashrate or revenue",
+      "seconds": {
+        "candidate_filter": 0.139493248,
+        "job_prepare": 17.8525749,
+        "native_scan_and_adapter": 153.153562255,
+        "npu_initialize": 0.018384654,
+        "proof_build": 0.09963772,
+        "proof_verify": 0.956713136,
+        "submit_including_verify": 1.189242502
+      }
+    },
+    "phase_snapshot_note": "Saved snapshot precedes the final accepted reply; counters are not the completed-run totals."
+  },
+  "limitations": {
+    "end_to_end_mining_speedup_established": false,
+    "positive_combined_income_established": false,
+    "new_wall_power_measured": false,
+    "fee_collection_validated": false,
+    "other_npu_family_validated": false,
+    "long_term_stability_established": false,
+    "withdrawal_established": false
+  }
+}

@@ -19,9 +19,14 @@ PROOF_CAP = 2 * 1024 * 1024
 
 class PreparedJob:
     def __init__(self, libdir, header76: bytes, seed32: bytes | None = None,
-                 m: int = M, n: int = N, cert_version: int = 3):
+                 m: int = M, n: int = N, cert_version: int = 3,
+                 proof_mode: str = "legacy", retain_originals_for_testing: bool = False):
         if (m, n, cert_version) != (M, N, 3):
             raise ValueError("only M=N16384, K4096, rank128 and certificate3 are supported")
+        if not isinstance(proof_mode, str) or proof_mode not in ("legacy", "cached"):
+            raise ValueError("proof_mode must be legacy or cached")
+        if not isinstance(retain_originals_for_testing, bool):
+            raise ValueError("retain_originals_for_testing must be a boolean")
         if not isinstance(header76, bytes) or len(header76) != 76:
             raise ValueError("header must be exactly 76 bytes")
         if seed32 is None:
@@ -31,12 +36,32 @@ class PreparedJob:
         for name in ("OMP_NUM_THREADS", "OMP_THREAD_LIMIT", "RAYON_NUM_THREADS"):
             os.environ[name] = "1"
         self.closed = False
+        self._cache_handle = 0
+        self.proof_mode = proof_mode
+        self.proof_cache_create_seconds = 0.0
+        self.matrix_preparation_seconds = 0.0
+        self.preparation_seconds = 0.0
+        self.python_matrix_bytes_resident = 0
+        self.native_matrix_bytes_resident = 0
+        self.matrix_bytes_resident = 0
+        self.original_a = self.original_bt = self.a_noised = self.b_noised = None
         self.m, self.n, self.k, self.rank, self.cert_version = m, n, K, RANK, cert_version
         self.header76 = header76
         self.seed_commitment = hashlib.sha256(seed32).hexdigest()
         self._header = C.create_string_buffer(header76, 76)
         self._prep = C.CDLL(str(Path(libdir) / "libpearl_prep.so"))
         self._proof = C.CDLL(str(Path(libdir) / "libpearl_edge_proof.so"))
+        self._bind()
+        try:
+            self._prepare(seed32, retain_originals_for_testing)
+        except BaseException as original_error:
+            try:
+                self.close()
+            except Exception as cleanup_error:
+                raise RuntimeError(f"{original_error}; cache cleanup also failed: {cleanup_error}") from original_error
+            raise
+
+    def _bind(self):
         pointer, size = C.c_void_p, C.c_size_t
         self._proof.prl_config_and_key.argtypes = [pointer, size, pointer, pointer, pointer, size]
         self._proof.prl_config_and_key.restype = C.c_ssize_t
@@ -45,9 +70,24 @@ class PreparedJob:
         self._proof.prl_verify_proof.argtypes = [pointer, size, pointer, size, C.c_uint32, C.c_uint32,
                                                pointer, pointer, pointer, pointer, pointer, size]
         self._proof.prl_verify_proof.restype = C.c_ssize_t
+        if self.proof_mode == "cached":
+            # An explicit cached request is never replaced with the slow path.
+            names = ("prl_proof_cache_open", "prl_build_proof_cached", "prl_proof_cache_close")
+            missing = [name for name in names if not hasattr(self._proof, name)]
+            if missing:
+                raise RuntimeError("cached proof mode requires native cache ABI: " + ", ".join(missing))
+            self._proof.prl_proof_cache_open.argtypes = [pointer, size, pointer, size, pointer,
+                                                        pointer, pointer, pointer, size]
+            self._proof.prl_proof_cache_open.restype = C.c_ssize_t
+            self._proof.prl_build_proof_cached.argtypes = [size, size, size, pointer, size, pointer, size]
+            self._proof.prl_build_proof_cached.restype = C.c_ssize_t
+            self._proof.prl_proof_cache_close.argtypes = [size, pointer, size]
+            self._proof.prl_proof_cache_close.restype = C.c_ssize_t
         self._prep.prep_from_ab.argtypes = [pointer, pointer, pointer, C.c_int64, C.c_int64, C.c_int64, C.c_int,
                                           pointer, pointer, pointer, pointer, pointer, pointer, pointer, pointer, C.c_int, C.c_int]
         self._prep.prep_from_ab.restype = C.c_int
+
+    def _prepare(self, seed32, retain_originals_for_testing):
         self._key = (C.c_uint8 * 32)()
         configuration = (C.c_uint8 * 52)()
         error = C.create_string_buffer(2048)
@@ -72,14 +112,35 @@ class PreparedJob:
         eal, ebr = (C.c_int8 * (M*RANK))(), (C.c_int8 * (N*RANK))()
         roots = [(C.c_uint8 * 32)() for _ in range(4)]
         result = self._prep.prep_from_ab(self.original_a, self.original_bt, self._key, M, N, K, RANK,
-                                        self.a_noised, self.b_noised, eal, ebr, *roots, 1, cert_version)
+                                        self.a_noised, self.b_noised, eal, ebr, *roots, 1, self.cert_version)
         if result != 0:
-            self.close()
             raise RuntimeError(f"prep_from_ab failed: {result}")
         self.root_a, self.root_b, self.commit_a, self.commit_b = (bytes(value) for value in roots)
+        self.matrix_preparation_seconds = time.monotonic() - started
+        # Preparation-only scratch buffers must not overlap cache construction.
+        del eal, ebr
+        if self.proof_mode == "cached":
+            cache_started = time.monotonic()
+            cached_roots = [(C.c_uint8 * 32)() for _ in range(2)]
+            handle = self._proof.prl_proof_cache_open(self.original_a, M*K, self.original_bt, N*K,
+                                                    self._key, *cached_roots, error, len(error))
+            if handle <= 0:
+                raise RuntimeError("Proof cache creation failed: " + error.value.decode(errors="replace"))
+            self._cache_handle = handle
+            self.native_matrix_bytes_resident = (M+N) * K
+            if [bytes(value) for value in cached_roots] != [self.root_a, self.root_b]:
+                raise RuntimeError("Cached Merkle roots differ from official prepared job")
+            self.proof_cache_create_seconds = time.monotonic() - cache_started
+            # Native MerkleTree owns immutable copies; remove the duplicate
+            # Python originals unless an offline equivalence test needs them.
+            if not retain_originals_for_testing:
+                self.original_a = self.original_bt = None
         self.preparation_seconds = time.monotonic() - started
-        self.matrix_bytes_resident = 2 * (M+N) * K
-        # eal and ebr are released here; callers need only the four persistent matrices.
+        self.python_matrix_bytes_resident = sum(C.sizeof(value) for value in
+            (self.original_a, self.original_bt, self.a_noised, self.b_noised) if value is not None)
+        # Matrix storage only: excludes native Merkle nodes, allocator metadata,
+        # proof buffers and temporary preparation memory. This is not process RSS.
+        self.matrix_bytes_resident = self.python_matrix_bytes_resident + self.native_matrix_bytes_resident
 
     def _open(self):
         if self.closed:
@@ -87,21 +148,27 @@ class PreparedJob:
 
     def build_proof(self, row: int, col_base: int) -> bytes:
         self._open()
-        if not (isinstance(row, int) and isinstance(col_base, int) and 0 <= row < M-32
+        if not (type(row) is int and type(col_base) is int and 0 <= row < M-32
                 and row % 64 < 32 and 0 <= col_base <= N-64 and col_base % 64 == 0):
             raise ValueError("invalid [row,row+32] /64-column band")
         output, error = C.create_string_buffer(PROOF_CAP), C.create_string_buffer(2048)
-        length = self._proof.prl_build_proof(self.original_a, M*K, self.original_bt, N*K,
-                                           self._key, row, col_base, output, len(output), error, len(error))
+        if self.proof_mode == "cached":
+            length = self._proof.prl_build_proof_cached(self._cache_handle, row, col_base,
+                                                       output, len(output), error, len(error))
+        else:
+            length = self._proof.prl_build_proof(self.original_a, M*K, self.original_bt, N*K,
+                                               self._key, row, col_base, output, len(output), error, len(error))
         if length <= 0:
             raise RuntimeError(error.value.decode(errors="replace"))
+        if length > len(output):
+            raise RuntimeError("Native proof length exceeds output capacity")
         return output.raw[:length]
 
     def verify(self, proof_bytes: bytes, nbits_override: int, expected_jackpot: bytes | None = None) -> dict:
         self._open()
         if not isinstance(proof_bytes, bytes) or not 0 < len(proof_bytes) <= PROOF_CAP:
             raise ValueError("proof size/type invalid")
-        if not isinstance(nbits_override, int) or not 0 < nbits_override <= 0xffffffff:
+        if type(nbits_override) is not int or not 0 < nbits_override <= 0xffffffff:
             raise ValueError("explicit uint32 compact target required")
         if expected_jackpot is not None and (not isinstance(expected_jackpot, bytes) or len(expected_jackpot) != 32):
             raise ValueError("expected jackpot must be32 bytes")
@@ -120,9 +187,22 @@ class PreparedJob:
 
     def close(self):
         # The coordinator must wait for its NPU scan to finish before calling close.
+        if self.closed:
+            return
         self.closed = True
+        handle, self._cache_handle = self._cache_handle, 0
         for name in ("original_a", "original_bt", "a_noised", "b_noised"):
             setattr(self, name, None)
+        self.python_matrix_bytes_resident = 0
+        self.matrix_bytes_resident = self.native_matrix_bytes_resident
+        if handle:
+            # Detach before calling native code: repeated close (including after
+            # an exception) must never release the same opaque handle twice.
+            error = C.create_string_buffer(2048)
+            result = self._proof.prl_proof_cache_close(handle, error, len(error))
+            if result != 0:
+                raise RuntimeError("Proof cache close failed: " + error.value.decode(errors="replace"))
+        self.native_matrix_bytes_resident = self.matrix_bytes_resident = 0
 
     def __enter__(self):
         self._open()

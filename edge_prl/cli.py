@@ -44,6 +44,8 @@ def main(argv=None):
         item.add_argument('--config', type=Path, required=True)
     economic = commands.add_parser('evaluate', help='Estimate paired CPU-only / dual value from an explicit snapshot.')
     economic.add_argument('input', type=Path)
+    overview = commands.add_parser('overview', help='Summarize supplied CPU/GPU/NPU observations without starting miners or inventing a universal rate.')
+    overview.add_argument('input', type=Path)
     bundle = commands.add_parser('bundle', help='Create a source-only review archive; no upload or publishing.')
     bundle.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(argv)
@@ -62,6 +64,10 @@ def main(argv=None):
         if args.command == 'evaluate':
             from .economics import evaluate, load_input
             emit(evaluate(load_input(args.input)))
+            return 0
+        if args.command == 'overview':
+            from .fleet_status import overview, load_input
+            emit(overview(load_input(args.input)))
             return 0
         if args.command == 'bundle':
             from .bundle import create_bundle

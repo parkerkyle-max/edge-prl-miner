@@ -235,7 +235,7 @@ def self_test(cfg,header_hex):
     try:
         npu=configured_npu(cfg)
         receipt.update(npu_width=npu.width,npu_variant=npu.variant)
-        prepared=PreparedJob(cfg['libdir'],header,seed32=bytes.fromhex(reference['seed32_hex']),m=16384,n=16384,cert_version=3)
+        prepared=PreparedJob(cfg['libdir'],header,seed32=bytes.fromhex(reference['seed32_hex']),m=16384,n=16384,cert_version=3,proof_mode=cfg.get('proof_mode','legacy'))
         if prepared.config52!=config.to_bytes():raise RuntimeError('Official config differs from Stratum config')
         for field,key in [('job_key','job_key_hex'),('commit_a','commit_a_hex'),('commit_b','commit_b_hex'),('root_a','root_a_hex'),('root_b','root_b_hex')]:
             if getattr(prepared,field).hex()!=reference[key]:raise RuntimeError('ARM preparation differs from independent host reference: '+field)
@@ -342,10 +342,11 @@ def live(cfg,role='user',phase_deadline=None):
                 prepared_job=job;status('PREPARING_REAL_JOB')
                 if time.monotonic()>=phase_deadline:break
                 t=time.monotonic();tick=time.perf_counter_ns()
-                try:prepared=PreparedJob(cfg['libdir'],job.header,seed32=os.urandom(32),m=job.config.m,n=job.config.n,cert_version=job.cert_version)
+                try:prepared=PreparedJob(cfg['libdir'],job.header,seed32=os.urandom(32),m=job.config.m,n=job.config.n,cert_version=job.cert_version,proof_mode=cfg.get('proof_mode','legacy'))
                 finally:timings.add('job_prepare',time.perf_counter_ns()-tick)
                 if prepared.config52!=job.config_bytes:raise RuntimeError('Official config mismatch')
-                rounds+=1;emit('real_job_prepared',job_token=job.token,seconds=time.monotonic()-t,commit_a=prepared.commit_a.hex())
+                rounds+=1;emit('real_job_prepared',job_token=job.token,seconds=time.monotonic()-t,commit_a=prepared.commit_a.hex(),
+                              proof_mode=cfg.get('proof_mode','legacy'),proof_cache_create_seconds=getattr(prepared,'proof_cache_create_seconds',0))
                 rowbase=0;colbase=0
                 if time.monotonic()>=phase_deadline or not client.is_current(job):continue
             if time.monotonic()>=phase_deadline:break

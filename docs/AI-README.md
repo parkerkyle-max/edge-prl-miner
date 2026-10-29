@@ -72,8 +72,18 @@ These are scoped measurements, not whole-device income gains or support for new
 NPUs. Read [Performance](PERFORMANCE.md) and its linked JSON record before quoting
 them; the native, preparation and proof costs still dominate the measured run.
 
-Models, vendor SDK/runtime and compiled native libraries are not bundled. A
-complete reproducible native build remains unfinished; cloning the repository
+The [general-miner overview](GENERAL-MINER.md) groups supplied CPU/GPU/NPU
+measurements only when their algorithm, rate definition, dimension, accounting
+and windows are comparable. It is an offline snapshot reader, not a CPU/GPU
+launcher. It does not combine MAC/s with H/s or collect fees from external miners.
+
+The [Core ML experiment](COREML-EXPERIMENT.md) has actual M1 Max arithmetic
+measurements, but does not establish a working Apple NPU mining backend. Refer
+to its placement results and explicit evidence limits before claiming support.
+
+Models, vendor SDK/runtime and compiled native libraries are not bundled. The
+proof/preparation source-build recipe is in [Native build](NATIVE-BUILD.md); the
+complete NPU bridge/model build remains unfinished. Cloning the repository
 alone is not enough to start mining. Whole-device value must include any loss
 of CPU mining output, developer allocation, restart overhead and measured extra
 power. See [Engine](ENGINE.md) and [Economics](ECONOMICS.md).

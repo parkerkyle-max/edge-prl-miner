@@ -1,0 +1,861 @@
+{
+  "schema": "edge-prl-coreml-public-evidence-v1",
+  "recorded_on": "2026-10-29",
+  "device": "Apple M1 Max",
+  "hardware_identity_source": "Operator verified on selected local device; identifying network metadata omitted",
+  "environment": {
+    "macos": "26.6.1",
+    "architecture": "arm64",
+    "python": "3.12.16",
+    "coremltools": "9.0",
+    "numpy": "2.2.6"
+  },
+  "scope": "Synthetic exact signed INT8 K128 arithmetic; no complete PRL scan, official proof, pool work, NPU execution trace or profitability measurement",
+  "timing_scope": "Ten short predictions per mode; summary omits first invocation, not a sustained benchmark and not PRL hashrate",
+  "qualification": "NOT_QUALIFIED",
+  "initial_parser_correction": "The first tile32 receipt counted zero matmul operations because the parser did not recognize ios16.matmul. Raw operation rows already showed CPU preferred. Raw counts are preserved; normalized counts use the corrected classifier. Later receipts recognize qualified names.",
+  "runs": [
+    {
+      "started_at_utc": "2026-10-29T09:13:49.211469+00:00",
+      "completed_at_utc": "2026-10-29T09:13:51.091130+00:00",
+      "tile": 32,
+      "k": 128,
+      "digit_products": 9,
+      "input_layout": "[1,9,M,128] x [1,9,128,N]",
+      "both_matrix_inputs_dynamic": true,
+      "model_files_sha256": {
+        "Data/com.apple.CoreML/model.mlmodel": "b7a2cb615b3a8cd0debf1478fc8789569c51ff083471128e0f97d54d83574de7",
+        "Manifest.json": "a69ab40e850db846d64343368e22cac889c1900a4964282fc99c66ae137c79ba"
+      },
+      "conversion_seconds": 1.5916772079654038,
+      "actual_npu_execution_verified": false,
+      "official_prl_proof_verified": false,
+      "pool_submissions": 0,
+      "mining_backend_qualified": false,
+      "developer_fee_charged": false,
+      "layout": "batched-matmul",
+      "raw_receipt_sha256": "20d4cf97ad9ee450d5e7f9be63663ef935eb2de57f2adfe5b4a7506a9d1d800f",
+      "experiment_source_sha256": null,
+      "supervisor": {
+        "status": "COMPLETED",
+        "worker_exit_code": 0,
+        "worker_stopped": true,
+        "max_seconds": 180,
+        "mining_started": false
+      },
+      "modes": [
+        {
+          "requested_compute_units": "CPU_ONLY",
+          "model_load_seconds": 0.09087275015190244,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0002304590307176113,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 0,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.015598875004798174,
+                0.0002304590307176113
+              ],
+              "reconstructed_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00028012460097670555,
+                0.00014799972996115685
+              ],
+              "reconstructed_sha256": "fc678550fdb98fd66cb4c4a9872ad397c863cfc33b7d824e79b10068b0f7a6a9"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.000264500267803669,
+                0.00013695796951651573
+              ],
+              "reconstructed_sha256": "0c56ada1e44cc8117e62f87549299e70795a594e2c8ee159f9bba51a0e0bbfea"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00033575017005205154,
+                0.0001392913982272148
+              ],
+              "reconstructed_sha256": "3efc005010bdf7ac139e4e2f0f4a6bdbe0b9d7793c1acd319df3a9ab100ee3c9"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0003247079439461231,
+                0.0001327083446085453
+              ],
+              "reconstructed_sha256": "7f7b373c732f418155efe15f20407c02b11f833e8c98f668f2085b54f54abf81"
+            }
+          ]
+        },
+        {
+          "requested_compute_units": "CPU_AND_NE",
+          "model_load_seconds": 0.06519583286717534,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.00013108272105455399,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice",
+                "MLNeuralEngineComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 0,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0004993327893316746,
+                0.00018133316189050674
+              ],
+              "reconstructed_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00014391588047146797,
+                0.00013954192399978638
+              ],
+              "reconstructed_sha256": "fc678550fdb98fd66cb4c4a9872ad397c863cfc33b7d824e79b10068b0f7a6a9"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00014033308252692223,
+                0.00013108272105455399
+              ],
+              "reconstructed_sha256": "0c56ada1e44cc8117e62f87549299e70795a594e2c8ee159f9bba51a0e0bbfea"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00012687500566244125,
+                0.00012529129162430763
+              ],
+              "reconstructed_sha256": "3efc005010bdf7ac139e4e2f0f4a6bdbe0b9d7793c1acd319df3a9ab100ee3c9"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00012812530621886253,
+                0.00012183329090476036
+              ],
+              "reconstructed_sha256": "7f7b373c732f418155efe15f20407c02b11f833e8c98f668f2085b54f54abf81"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "started_at_utc": "2026-10-29T09:14:44.680662+00:00",
+      "completed_at_utc": "2026-10-29T09:14:45.039338+00:00",
+      "tile": 128,
+      "k": 128,
+      "digit_products": 9,
+      "input_layout": "[1,9,M,128] x [1,9,128,N]",
+      "both_matrix_inputs_dynamic": true,
+      "model_files_sha256": {
+        "Data/com.apple.CoreML/model.mlmodel": "de188abbc3e1e454a64341b2d030d7d1a03408f76f6882e0b75906a12cf64304",
+        "Manifest.json": "9e52883f7f04cc0e747ca8cef5a6120b8572579200be75619a2d7e1db3169a1d"
+      },
+      "conversion_seconds": 0.040661165956407785,
+      "actual_npu_execution_verified": false,
+      "official_prl_proof_verified": false,
+      "pool_submissions": 0,
+      "mining_backend_qualified": false,
+      "developer_fee_charged": false,
+      "layout": "batched-matmul",
+      "raw_receipt_sha256": "cafe3a8b6a7a3ac41e0f094c8f07c2c9e50cefa2bfd38261f006d806fad16e01",
+      "experiment_source_sha256": {
+        "__init__.py": "15e322ea090b0348a1f8d088c2009abebadb19cfeed18a438dc1759a0333fe9a",
+        "arithmetic.py": "e2327d8b9fa522febc40c4f7526d1356990edf49c9cba058bb1c7fe181369612",
+        "probe.py": "929212c790cb455ace85fc12a8c7fd3208fb1a5ff1a0bcb45701054df2e7b6f7"
+      },
+      "supervisor": {
+        "status": "COMPLETED",
+        "worker_exit_code": 0,
+        "worker_stopped": true,
+        "max_seconds": 180,
+        "mining_started": false
+      },
+      "modes": [
+        {
+          "requested_compute_units": "CPU_ONLY",
+          "model_load_seconds": 0.06602987507358193,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0004574581980705261,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 1,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.016243124846369028,
+                0.0004574581980705261
+              ],
+              "reconstructed_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0009042499586939812,
+                0.0004059579223394394
+              ],
+              "reconstructed_sha256": "486e22804adaa4cbd2cbd722f1bff514fcb34de86d3dd345208d5b99f1459e73"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0008428748697042465,
+                0.0003655841574072838
+              ],
+              "reconstructed_sha256": "c7abc2e7242e0423434ad4f5398d88b5298be300ffc7bbe58b333eee0f49b2ba"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00117575004696846,
+                0.00032958295196294785
+              ],
+              "reconstructed_sha256": "2f4469a93ccc8f822bd8763e2358dcf11bc0953309c439009638d60041c1782d"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.001203459221869707,
+                0.00038454169407486916
+              ],
+              "reconstructed_sha256": "75b896ca73c37dd3e769479bc20710b506bea9791f6a513146d4094a0206315d"
+            }
+          ]
+        },
+        {
+          "requested_compute_units": "CPU_AND_NE",
+          "model_load_seconds": 0.05677833314985037,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0002510407939553261,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice",
+                "MLNeuralEngineComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 1,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0006342502310872078,
+                0.0002999170683324337
+              ],
+              "reconstructed_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0002666669897735119,
+                0.0002510407939553261
+              ],
+              "reconstructed_sha256": "486e22804adaa4cbd2cbd722f1bff514fcb34de86d3dd345208d5b99f1459e73"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0002527502365410328,
+                0.0002444591373205185
+              ],
+              "reconstructed_sha256": "c7abc2e7242e0423434ad4f5398d88b5298be300ffc7bbe58b333eee0f49b2ba"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0002382923848927021,
+                0.00023979181423783302
+              ],
+              "reconstructed_sha256": "2f4469a93ccc8f822bd8763e2358dcf11bc0953309c439009638d60041c1782d"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00024554086849093437,
+                0.00025633303448557854
+              ],
+              "reconstructed_sha256": "75b896ca73c37dd3e769479bc20710b506bea9791f6a513146d4094a0206315d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "started_at_utc": "2026-10-29T09:14:58.615232+00:00",
+      "completed_at_utc": "2026-10-29T09:14:59.268420+00:00",
+      "tile": 256,
+      "k": 128,
+      "digit_products": 9,
+      "input_layout": "[1,9,M,128] x [1,9,128,N]",
+      "both_matrix_inputs_dynamic": true,
+      "model_files_sha256": {
+        "Data/com.apple.CoreML/model.mlmodel": "135489af2b2359cbaed430196ad712e1a4d45a2e07c2e1e6d58b6081d9b55c69",
+        "Manifest.json": "deabec74b3dd03aa4813009d50bc5efb18ef8b09ec625c10f9dc013209326d9f"
+      },
+      "conversion_seconds": 0.03895391710102558,
+      "actual_npu_execution_verified": false,
+      "official_prl_proof_verified": false,
+      "pool_submissions": 0,
+      "mining_backend_qualified": false,
+      "developer_fee_charged": false,
+      "layout": "batched-matmul",
+      "raw_receipt_sha256": "e77ab6de2b6526a982687dcf81b8a4d13b63f7613ba117ef4e2a1ae37fde6795",
+      "experiment_source_sha256": {
+        "__init__.py": "15e322ea090b0348a1f8d088c2009abebadb19cfeed18a438dc1759a0333fe9a",
+        "arithmetic.py": "e2327d8b9fa522febc40c4f7526d1356990edf49c9cba058bb1c7fe181369612",
+        "probe.py": "929212c790cb455ace85fc12a8c7fd3208fb1a5ff1a0bcb45701054df2e7b6f7"
+      },
+      "supervisor": {
+        "status": "COMPLETED",
+        "worker_exit_code": 0,
+        "worker_stopped": true,
+        "max_seconds": 180,
+        "mining_started": false
+      },
+      "modes": [
+        {
+          "requested_compute_units": "CPU_ONLY",
+          "model_load_seconds": 0.06459454214200377,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0009393752552568913,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 1,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.01471666619181633,
+                0.0009393752552568913
+              ],
+              "reconstructed_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0015851669013500214,
+                0.0007471665740013123
+              ],
+              "reconstructed_sha256": "705ad3a300dac87143fdf7d1129e54c8d63247aaa12d2cd6fe6a94a3c5a6b8c1"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.001612833235412836,
+                0.000727000180631876
+              ],
+              "reconstructed_sha256": "53931bee0693eb5c4c260891fbedb6bc7b783c7417da3181340ff242b264b4b7"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.002155375201255083,
+                0.0007201251573860645
+              ],
+              "reconstructed_sha256": "733a8538ce998155c8fd686812bdca314e4ec359887e8fcd0d148723146777a3"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0021655410528182983,
+                0.000716999638825655
+              ],
+              "reconstructed_sha256": "69455f7a011937ed125229d94e8047ea58fa7d112ebf4edf35d6762c48d3debc"
+            }
+          ]
+        },
+        {
+          "requested_compute_units": "CPU_AND_NE",
+          "model_load_seconds": 0.05355295818299055,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0008653327822685242,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.matmul",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice",
+                "MLNeuralEngineComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 1,
+            "einsum_operations": 0,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 1,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0011247079819440842,
+                0.0007938332855701447
+              ],
+              "reconstructed_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0007564579136669636,
+                0.0009547919034957886
+              ],
+              "reconstructed_sha256": "705ad3a300dac87143fdf7d1129e54c8d63247aaa12d2cd6fe6a94a3c5a6b8c1"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0009141657501459122,
+                0.0008779172785580158
+              ],
+              "reconstructed_sha256": "53931bee0693eb5c4c260891fbedb6bc7b783c7417da3181340ff242b264b4b7"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0008977502584457397,
+                0.0008653327822685242
+              ],
+              "reconstructed_sha256": "733a8538ce998155c8fd686812bdca314e4ec359887e8fcd0d148723146777a3"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0007508751004934311,
+                0.0007368330843746662
+              ],
+              "reconstructed_sha256": "69455f7a011937ed125229d94e8047ea58fa7d112ebf4edf35d6762c48d3debc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "started_at_utc": "2026-10-29T09:17:03.832619+00:00",
+      "completed_at_utc": "2026-10-29T09:17:04.187576+00:00",
+      "tile": 128,
+      "k": 128,
+      "digit_products": 9,
+      "input_layout": "[9,M,1,128] x [9,128,1,N]",
+      "both_matrix_inputs_dynamic": true,
+      "model_files_sha256": {
+        "Data/com.apple.CoreML/model.mlmodel": "10370e35caca501ecf7cb4a9a3123d2b11d00c9e50fadb00b52f60c0463bcc52",
+        "Manifest.json": "96544cc29aed0ebe0c6b3045ddea97c5ef4c1829f90365c1d81b511e997e7a47"
+      },
+      "conversion_seconds": 0.03903970820829272,
+      "actual_npu_execution_verified": false,
+      "official_prl_proof_verified": false,
+      "pool_submissions": 0,
+      "mining_backend_qualified": false,
+      "developer_fee_charged": false,
+      "layout": "channels-first",
+      "raw_receipt_sha256": "ed0291135fbd7d4481d56cb1b7d302ac0149f33c40c93d58fe6209d8b538ddb4",
+      "experiment_source_sha256": {
+        "__init__.py": "15e322ea090b0348a1f8d088c2009abebadb19cfeed18a438dc1759a0333fe9a",
+        "arithmetic.py": "ee4d680c363931dd13e2d2137706bb617a9b4b6a0186aa146b8daf5c2402ce68",
+        "probe.py": "b352f4ea818aae07e71ce5ec8281925b0705101c8470fd5d2184b1fd6cb553d2"
+      },
+      "supervisor": {
+        "status": "COMPLETED",
+        "worker_exit_code": 0,
+        "worker_stopped": true,
+        "max_seconds": 180,
+        "mining_started": false
+      },
+      "modes": [
+        {
+          "requested_compute_units": "CPU_ONLY",
+          "model_load_seconds": 0.06454729102551937,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0004359576851129532,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.einsum",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 0,
+            "einsum_operations": 1,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 0,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.016007541678845882,
+                0.0004359576851129532
+              ],
+              "reconstructed_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0009006671607494354,
+                0.00038412539288401604
+              ],
+              "reconstructed_sha256": "486e22804adaa4cbd2cbd722f1bff514fcb34de86d3dd345208d5b99f1459e73"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0008963332511484623,
+                0.00038829073309898376
+              ],
+              "reconstructed_sha256": "c7abc2e7242e0423434ad4f5398d88b5298be300ffc7bbe58b333eee0f49b2ba"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0011837920174002647,
+                0.00036195898428559303
+              ],
+              "reconstructed_sha256": "2f4469a93ccc8f822bd8763e2358dcf11bc0953309c439009638d60041c1782d"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00121991615742445,
+                0.00034908298403024673
+              ],
+              "reconstructed_sha256": "75b896ca73c37dd3e769479bc20710b506bea9791f6a513146d4094a0206315d"
+            }
+          ]
+        },
+        {
+          "requested_compute_units": "CPU_AND_NE",
+          "model_load_seconds": 0.052709291223436594,
+          "exact_cases": 5,
+          "exact_predictions": 10,
+          "prediction_median_seconds_excluding_first_invocation": 0.0003520408645272255,
+          "compute_plan_operations": [
+            {
+              "operator": "const",
+              "preferred": null,
+              "supported": []
+            },
+            {
+              "operator": "ios16.einsum",
+              "preferred": "MLCPUComputeDevice",
+              "supported": [
+                "MLCPUComputeDevice",
+                "MLNeuralEngineComputeDevice"
+              ]
+            }
+          ],
+          "normalized_plan_evidence": {
+            "matmul_operations": 0,
+            "einsum_operations": 1,
+            "matrix_product_operations": 1,
+            "all_matrix_products_prefer_neural_engine": false,
+            "all_matmuls_prefer_neural_engine": false,
+            "evidence_scope": "anticipated_compute_plan_only",
+            "actual_npu_execution_verified": false,
+            "mining_backend_qualified": false
+          },
+          "raw_recorded_matmul_operations": 0,
+          "cases": [
+            {
+              "name": "zero",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0006504999473690987,
+                0.0003982917405664921
+              ],
+              "reconstructed_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+            },
+            {
+              "name": "digit-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.00037508411332964897,
+                0.0003813747316598892
+              ],
+              "reconstructed_sha256": "486e22804adaa4cbd2cbd722f1bff514fcb34de86d3dd345208d5b99f1459e73"
+            },
+            {
+              "name": "signed-boundary",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0003520408645272255,
+                0.00033512525260448456
+              ],
+              "reconstructed_sha256": "c7abc2e7242e0423434ad4f5398d88b5298be300ffc7bbe58b333eee0f49b2ba"
+            },
+            {
+              "name": "random-1",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.000383082777261734,
+                0.0003287498839199543
+              ],
+              "reconstructed_sha256": "2f4469a93ccc8f822bd8763e2358dcf11bc0953309c439009638d60041c1782d"
+            },
+            {
+              "name": "random-2",
+              "exact": true,
+              "predictions": 2,
+              "prediction_seconds": [
+                0.0003398749977350235,
+                0.00034237513318657875
+              ],
+              "reconstructed_sha256": "75b896ca73c37dd3e769479bc20710b506bea9791f6a513146d4094a0206315d"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "schema": "edge-prl-project-metadata-v1",
   "metadata_version": 1,
   "name": "Edge PRL",
-  "software_version": "0.1.0a3",
+  "software_version": "0.1.0a4",
   "release_status": "experimental_source",
   "repository": "https://github.com/parkerkyle-max/edge-prl-miner",
   "maintainer_namespace": "parkerkyle-max",
@@ -65,7 +65,22 @@
     "model_bundled": false,
     "compiled_native_libraries_bundled": false,
     "complete_reproducible_native_build": false,
+    "proof_and_preparation_source_build_path": "docs/NATIVE-BUILD.md",
+    "npu_bridge_and_model_build_complete": false,
     "clone_alone_can_mine": false
+  },
+  "general_miner": {
+    "guide_path": "docs/GENERAL-MINER.md",
+    "mode": "supplied_offline_snapshot_overview",
+    "launches_external_cpu_gpu_miners": false,
+    "collects_external_cpu_gpu_fee": false,
+    "universal_combined_hashrate": false
+  },
+  "second_backend_experiment": {
+    "guide_path": "docs/COREML-EXPERIMENT.md",
+    "family": "apple-coreml",
+    "working_mining_backend": false,
+    "npu_execution_verified": false
   },
   "historical_validation": {
     "documentation_path": "docs/VALIDATION.md",
@@ -89,6 +104,8 @@
   },
   "performance_evidence": {
     "report_path": "docs/PERFORMANCE.md",
+    "proof_cache_measurements_path": "benchmarks/a733-proof-cache-20261029.json",
+    "coreml_experiment_measurements_path": "benchmarks/coreml-m1max-20261029.json",
     "measurements_path": "benchmarks/a733-packed-20261029.json",
     "scope": "short fixed-input A733 scan/filter comparison and separate bounded zero-fee pool trial",
     "other_npu_support_established": false,

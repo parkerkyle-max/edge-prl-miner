@@ -28,7 +28,14 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_format_check_does_not_read_device_or_open_network(self):
         with patch.object(Path,'read_text',side_effect=AssertionError('file read')),patch.object(Path,'read_bytes',side_effect=AssertionError('file read')):
-            self.assertEqual(validate_config(fixture()),dict(fixture(),backend_id='a733-viplite-v2-f32-256'))
+            self.assertEqual(validate_config(fixture()),dict(fixture(),backend_id='a733-viplite-v2-f32-256',proof_mode='legacy'))
+
+    def test_cached_proofs_are_explicit_and_unknown_modes_refused(self):
+        self.assertEqual(validate_config(fixture())['proof_mode'], 'legacy')
+        self.assertEqual(validate_config(dict(fixture(),proof_mode='cached'))['proof_mode'], 'cached')
+        for mode in ('auto', '', None, True):
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                validate_config(dict(fixture(),proof_mode=mode))
 
     def test_explicit_fields_and_exact_types(self):
         bad_values={'device_confirmed':[False,1,None], 'dev_fee':[2,False,'0'], 'cpu_threads':[2,True,0],

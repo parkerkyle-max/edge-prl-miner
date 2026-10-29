@@ -168,3 +168,43 @@ Other NPU implementations must preserve exact PRL arithmetic and proof
 verification. Approximate inference throughput, INT8 TOPS, CPU fallback or a
 successful model load does not establish usable mining speed. Only measured
 complete work and real pool acceptance can advance a backend's support status.
+## Cached proof construction on A733: 2026-10-29
+
+The new `proof_mode: cached` path reuses each immutable job's original-matrix
+Merkle trees. [Sanitized measurements](../benchmarks/a733-proof-cache-20261029.json)
+bind the freshly built native library, source archive and unchanged engine
+files. The [source recipe and native self-test](NATIVE-BUILD.md) are published.
+
+On the same prepared job, eight boundary locations were compared in alternating
+legacy/cached order. All eight proof byte strings matched exactly and passed
+the official verifier. Median construction time was **1.042984 s legacy versus
+0.005967 s cached**. This roughly 175x ratio describes the hot proof call only.
+Cache creation added **1.404185 s per job**; total preparation in the comparison
+was 3.578663 s. At these timings, two proofs per job amortize cache creation.
+Short jobs or jobs with few hits can make eager caching unattractive. Old
+configurations therefore retain `legacy` unless `cached` is explicitly selected.
+
+The separate bounded 180-second zero-fee live trial passed 64 independent NPU
+reference hashes and six offline official proofs, then recorded **22 accepted
+pool replies and zero rejected replies**. An independent pool API read observed
+the test worker. Peak sampled temperature was 67.26 C; no owned mining process
+remained after the trial. All 14 tested engine/fixture file hashes were reread
+and matched the published candidate.
+
+The separate six-thread CPU miner kept the same process identity. Its rolling
+rate was 298.0 H/s beforehand and 278.8–280.7 H/s in the sampled dual-mining
+period; a later read after the experiment returned to 297.6 H/s with the same
+process identity. The last saved logical rate was 0.797842 GMAC/s; this is not a pool
+hashrate or income estimate. The saved phase snapshot contains 21 proof calls
+totaling 0.099638 s, while preparation of five jobs took 17.852575 s. That
+snapshot precedes the final accepted reply and is explicitly not the final
+run counter total.
+
+This trial establishes correctness and real pool acceptance for this cached
+candidate. It is not a matched live A/B experiment and does not establish a
+percentage gain in whole-miner throughput, combined income or energy efficiency.
+Power, long-duration stability and the 1% fee window were not validated here.
+
+Next useful optimization gates are lazy/adaptive cache creation for low-hit
+jobs, reducing preparation cost, and device-side scan/CPU reconstruction overlap.
+Each needs a matched whole-run measurement with CPU mining contention included.

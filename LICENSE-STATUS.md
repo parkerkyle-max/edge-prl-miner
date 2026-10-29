@@ -18,5 +18,6 @@ No vendor SDK, proprietary VIPLite header, compiler image, NPU runtime binary,
 compiled native library or generated NBG model is distributed here. Their
 redistribution rights have not been established. An operator supplies locally
 installed/licensed artifacts; permission to use them locally does not establish
-permission to redistribute them. A complete reproducible native build and
-native dependency SBOM remain unfinished.
+permission to redistribute them. The source-build recipe for the preparation
+and proof libraries is published in [Native build](docs/NATIVE-BUILD.md). The
+NPU bridge/model build and a complete native dependency SBOM remain unfinished.

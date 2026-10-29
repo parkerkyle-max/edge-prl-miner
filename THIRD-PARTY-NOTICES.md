@@ -11,6 +11,13 @@ earlier local research implementation. The exact numerical/proof path used:
   `12c156c24e7db40aaa903a4e79a258b5dd46a33b`.
 - BLAKE3 components with their notices retained in `engine/licenses`.
 
+`native-build/prep/prep-single.c` is the attributed preparation derivative;
+`native-build/pins.json` records its original upstream file hash and changes.
+The proof wrapper and immutable cache additions in `native-build/proof/src/`
+call the pinned official implementation. Their build lock records transitive
+dependencies but is not a complete license SBOM. Build outputs are excluded.
+See [Native build](docs/NATIVE-BUILD.md) for exact inputs and compiler checks.
+
 Retained notice files:
 
 - `engine/licenses/ASCEND-FORK-LICENSE.txt`: MIT, copyright 2026 arabel1a.

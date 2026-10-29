@@ -34,6 +34,21 @@ class SourceBundleTests(unittest.TestCase):
             create_bundle(self.root, self.destination)
         self.assertFalse(self.destination.exists())
 
+    def test_native_and_coreml_sources_exclude_generated_models_and_binaries(self):
+        from edge_prl.bundle import allowed
+        for name in ('native-build/proof/Cargo.lock', 'native-build/proof/Cargo.toml.in',
+                     'native-build/proof/src/cache_api.rs', 'native-build/prep/prep-single.c',
+                     'experiments/coreml_prl/probe.py', 'experiments/coreml_prl/requirements.txt',
+                     'examples/devices.synthetic.json'):
+            self.assertTrue(allowed(Path(name)), name)
+        for name in ('native-build/libproof.so', 'experiments/coreml_prl/model.mlmodel',
+                     'experiments/coreml_prl/model.mlpackage/Manifest.json',
+                     'experiments/coreml_prl/.venv/lib/python3.12/site-packages/coremltools/models.py',
+                     'native-build/build-receipt.json',
+                     'native-build/target/release/.fingerprint/pkg/lib-pkg.json',
+                     'local/native-build/build-receipt.json'):
+            self.assertFalse(allowed(Path(name)), name)
+
     def test_existing_archive_never_overwritten(self):
         self.destination.write_bytes(b'keep this')
         with self.assertRaises(FileExistsError):

@@ -38,3 +38,5 @@ jobs:
         run: |
           python -m edge_prl devices
           python -m edge_prl backends
+      - name: Exercise synthetic general-miner accounting
+        run: python -m edge_prl overview examples/devices.synthetic.json

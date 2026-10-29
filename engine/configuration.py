@@ -46,6 +46,8 @@ def validate_config(cfg, hardware=False):
     profile = result.setdefault('backend_profile', 'cached-neon-a')
     if profile != 'cached-neon-a':
         raise ValueError('Only cached-neon-a is supported')
+    if result.setdefault('proof_mode', 'legacy') not in ('legacy', 'cached'):
+        raise ValueError('proof_mode must be legacy or cached; cached requires the proof-cache native ABI')
     if type(result.get('cpu_threads')) is not int or result['cpu_threads'] != 1:
         raise ValueError('The verified preparation backend requires cpu_threads=1')
     affinity = result.get('cpu_affinity')

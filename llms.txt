@@ -34,9 +34,14 @@ new fee-scheduler acceptance, long-term stability or profit.
 - [Compatibility catalog](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/compatibility/backends.json): Family status and backend qualification scope.
 - [Compatibility guide](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/COMPATIBILITY.md): Device detection is not proof of mining support.
 - [Engine](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/ENGINE.md): Required local artifacts and bounded execution.
+- [Native source build](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/NATIVE-BUILD.md): Pinned proof/preparation sources, cache ABI and offline verification; excludes vendor model/runtime.
+- [CPU GPU NPU overview](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/GENERAL-MINER.md): Comparable supplied snapshot groups, no universal hashrate and no external miner control.
+- [Core ML experiment](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/COREML-EXPERIMENT.md): Actual M1 Max arithmetic and placement research; no qualified Apple miner.
 - [Validation](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/VALIDATION.md): Historical device evidence and its limits.
 - [Performance](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/PERFORMANCE.md): Host-only measurements, controlled A733 scan comparison and bounded live evidence.
 - [Sanitized benchmark data](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/benchmarks/a733-packed-20261029.json): Machine-readable measurements with test scope and fee setting.
+- [Proof-cache measurements](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/benchmarks/a733-proof-cache-20261029.json): Controlled proof timings, creation cost and separate zero-fee accepted shares; no whole-miner speedup claim.
+- [Core ML measurements](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/benchmarks/coreml-m1max-20261029.json): Exact arithmetic with CPU-preferred plans; not verified ANE mining.
 - [Economics](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/ECONOMICS.md): Whole-device value comparison, including CPU losses and power.
 - [MIT license](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/LICENSE): Terms for original project code.
 - [Third-party notices](https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/THIRD-PARTY-NOTICES.md): Component provenance and distribution limits.

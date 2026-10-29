@@ -77,6 +77,13 @@ settled pool hashrate or a fiat-income estimate.
 
 ## Hardware and local artifacts
 
+The later [proof-cache trial](docs/PERFORMANCE.md#cached-proof-construction-on-a733-2026-10-29)
+recorded 22 accepted replies and zero rejected replies in 180 seconds with a 0%
+fee. Eight controlled proof comparisons were byte-identical. Median hot proof
+construction fell from 1.043 s to 0.006 s, with 1.404 s of additional cache
+creation per job. This is a proof-step improvement, not a 175x mining or income
+claim. Whole-device gains and the fee window still need separate measurements.
+
 The initial backend uses a fixed FP32 256×256 model with both A and B as inputs.
 At runtime it needs no Windows/WSL compiler host or per-job model compilation.
 The separately researched dynamic-model NN route is not included in this backend.
@@ -93,10 +100,27 @@ Requirements on the target:
   speed, and readable temperature sensors.
 
 **The model, vendor SDK/runtime and compiled native libraries are not bundled.**
-A complete reproducible native build and support for additional NPUs remain
+A [pinned source build for the proof and preparation libraries](docs/NATIVE-BUILD.md)
+is provided. The NPU bridge/model build and support for additional NPUs remain
 unfinished. Cloning this source alone is not sufficient to mine. Driver/DTB
 names do not independently establish a board's retail model; hardware and proof
 gates must pass on the actual target. See [Engine](docs/ENGINE.md).
+
+## CPU, GPU and NPU together
+
+The [general-miner overview](docs/GENERAL-MINER.md) can report supplied CPU,
+GPU and NPU observations together. Run `python -m edge_prl overview
+examples/devices.synthetic.json` for a clearly synthetic example. It does not
+start, configure or charge fees to external CPU/GPU miners. Comparable rates
+are grouped; different algorithms, MAC/s versus H/s, and local versus pool
+observations are not added into a misleading universal hashrate. The useful
+product claim is an independently measured extra NPU contribution and change
+in total output, after accounting for CPU contention and all miner fees.
+
+The [Core ML arithmetic experiment](docs/COREML-EXPERIMENT.md) explores another
+NPU family. It is a research harness, not an Apple mining backend. Exact output,
+planned placement, verified device execution and accepted PRL shares remain
+separate evidence requirements.
 
 Windows can run help, static configuration checks, economics calculations and
 offline protocol tests. Passing those tests does not validate an NPU. A readable

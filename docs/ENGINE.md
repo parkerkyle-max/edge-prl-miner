@@ -150,6 +150,22 @@ compares the complete reference hashes, verifies genuine official proofs,
 and rejects corrupted proofs. It has no network client. Never distribute a
 private device's gate or copy it to another device.
 
+## Optional proof cache
+
+`"proof_mode": "cached"` uses the additive native cache ABI built by the
+[pinned build recipe](NATIVE-BUILD.md). The default for configurations that omit
+this field remains `legacy`. An explicitly selected cache fails if its ABI is
+missing; it never silently falls back. Re-run the full device self-test after
+changing the library or mode.
+
+For each immutable job, the cache owns copies of the original matrices and
+their Merkle trees. The wrapper checks the roots against preparation before
+releasing its redundant Python originals. Candidate proofs and official
+verification keep their existing target/job/expiry checks. Job replacement and
+shutdown close the cache; no tree is reused across jobs. Initial cache creation,
+peak memory, CPU contention and job lifetime must be included when evaluating
+the benefit, not just the hot proof-construction call.
+
 ## Interpreting output
 
 `events.jsonl` rotates with a bounded size. `miner.json` reports raw and stale

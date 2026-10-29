@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "as_of_utc": "2026-01-01T00:00:35Z",
+  "freshness_seconds": 60,
+  "devices": [
+    {
+      "device_id": "gpu-a",
+      "kind": "GPU"
+    },
+    {
+      "device_id": "gpu-b",
+      "kind": "GPU"
+    },
+    {
+      "device_id": "npu-a",
+      "kind": "NPU"
+    },
+    {
+      "device_id": "cpu-a",
+      "kind": "CPU"
+    }
+  ],
+  "measurements": [
+    {
+      "measurement_id": "gpu-a-rate",
+      "device_ids": [
+        "gpu-a"
+      ],
+      "source": "local",
+      "source_id": "synthetic-local-miner",
+      "coin": "PRL",
+      "algorithm": "pearl-matrix-v1",
+      "rate_definition": "synthetic-forge-reported-v1",
+      "basis": "local_reported_hashes_per_wall_second",
+      "unit": "TH/s",
+      "value": 42,
+      "window_start_utc": "2026-01-01T00:00:00Z",
+      "window_end_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "accounting": "user",
+      "selected": true
+    },
+    {
+      "measurement_id": "gpu-b-rate",
+      "device_ids": [
+        "gpu-b"
+      ],
+      "source": "local",
+      "source_id": "synthetic-local-miner",
+      "coin": "PRL",
+      "algorithm": "pearl-matrix-v1",
+      "rate_definition": "synthetic-forge-reported-v1",
+      "basis": "local_reported_hashes_per_wall_second",
+      "unit": "TH/s",
+      "value": 28,
+      "window_start_utc": "2026-01-01T00:00:00Z",
+      "window_end_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "accounting": "user",
+      "selected": true
+    },
+    {
+      "measurement_id": "npu-rate",
+      "device_ids": [
+        "npu-a"
+      ],
+      "source": "local",
+      "source_id": "synthetic-local-miner",
+      "coin": "PRL",
+      "algorithm": "pearl-matrix-v1",
+      "rate_definition": "synthetic-prl-complete-mac-v1",
+      "basis": "completed_nonstale_macs_per_wall_second",
+      "unit": "GMAC/s",
+      "value": 0.9,
+      "window_start_utc": "2026-01-01T00:00:00Z",
+      "window_end_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "accounting": "user",
+      "selected": true
+    },
+    {
+      "measurement_id": "cpu-rate",
+      "device_ids": [
+        "cpu-a"
+      ],
+      "source": "local",
+      "source_id": "synthetic-local-miner",
+      "coin": "XMR",
+      "algorithm": "randomx",
+      "rate_definition": "randomx-hash-v1",
+      "basis": "local_reported_hashes_per_wall_second",
+      "unit": "H/s",
+      "value": 280,
+      "window_start_utc": "2026-01-01T00:00:00Z",
+      "window_end_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "accounting": "user",
+      "selected": true
+    },
+    {
+      "measurement_id": "alternate-pool-observation",
+      "device_ids": [
+        "gpu-a",
+        "gpu-b"
+      ],
+      "source": "pool",
+      "source_id": "synthetic-pool",
+      "coin": "PRL",
+      "algorithm": "pearl-matrix-v1",
+      "rate_definition": "synthetic-forge-reported-v1",
+      "basis": "pool_effective_hashes_per_wall_second",
+      "unit": "TH/s",
+      "value": 65,
+      "window_start_utc": "2026-01-01T00:00:00Z",
+      "window_end_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "accounting": "user",
+      "selected": false
+    }
+  ],
+  "income_estimates": [
+    {
+      "estimate_id": "gpu-a-income",
+      "device_ids": [
+        "gpu-a"
+      ],
+      "coin": "PRL",
+      "currency": "CAD",
+      "period": "day",
+      "amount": 0.1,
+      "source_id": "synthetic-estimator",
+      "market_snapshot_id": "synthetic-prices-1",
+      "market_observed_at_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "net_of_all_miner_and_pool_fees": true,
+      "selected": true
+    },
+    {
+      "estimate_id": "gpu-b-income",
+      "device_ids": [
+        "gpu-b"
+      ],
+      "coin": "PRL",
+      "currency": "CAD",
+      "period": "day",
+      "amount": 0.08,
+      "source_id": "synthetic-estimator",
+      "market_snapshot_id": "synthetic-prices-1",
+      "market_observed_at_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "net_of_all_miner_and_pool_fees": true,
+      "selected": true
+    },
+    {
+      "estimate_id": "npu-income-unknown",
+      "device_ids": [
+        "npu-a"
+      ],
+      "coin": "PRL",
+      "currency": "CAD",
+      "period": "day",
+      "amount": null,
+      "source_id": "synthetic-estimator",
+      "market_snapshot_id": "synthetic-prices-1",
+      "market_observed_at_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "net_of_all_miner_and_pool_fees": true,
+      "selected": true
+    },
+    {
+      "estimate_id": "cpu-income",
+      "device_ids": [
+        "cpu-a"
+      ],
+      "coin": "XMR",
+      "currency": "CAD",
+      "period": "day",
+      "amount": 0.01,
+      "source_id": "synthetic-estimator",
+      "market_snapshot_id": "synthetic-prices-1",
+      "market_observed_at_utc": "2026-01-01T00:00:30Z",
+      "observed_at_utc": "2026-01-01T00:00:30Z",
+      "net_of_all_miner_and_pool_fees": true,
+      "selected": true
+    }
+  ]
+}

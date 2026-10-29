@@ -20,13 +20,24 @@ LICENSE_FILES = {
 PUBLIC_DEV_FEE_ADDRESS = 'prl1pwjessemugthkad9hkttcx2rvenux2q0w0xcah2j0a7zfrycjhz5qhn7apw'
 PUBLIC_ADDRESS_FILES = {'engine/devfee.py', 'docs/DEV-FEE.md', 'edge_prl/bundle.py'}
 BLOCKED_SUFFIXES = {'.so', '.dll', '.exe', '.nb', '.db', '.dpapi', '.prlbackup', '.pem', '.key', '.pyc'}
+NATIVE_BUILD_FILES = {
+    'native-build/build.py', 'native-build/selftest.py', 'native-build/pins.json',
+    'native-build/include/prl_proof.h', 'native-build/prep/prep-single.c',
+    'native-build/proof/Cargo.toml.in', 'native-build/proof/Cargo.lock',
+    'native-build/proof/src/lib.rs', 'native-build/proof/src/cache_api.rs',
+}
+COREML_SOURCE_FILES = {
+    'experiments/coreml_prl/__init__.py', 'experiments/coreml_prl/arithmetic.py',
+    'experiments/coreml_prl/probe.py', 'experiments/coreml_prl/requirements.txt',
+}
 
 
 def allowed(relative: Path) -> bool:
     name = relative.as_posix()
     if name in ROOT_FILES or name in LICENSE_FILES or name in {'.github/workflows/tests.yml',
             '.github/ISSUE_TEMPLATE/npu-support.yml', 'compatibility/backends.json',
-            'benchmarks/a733-packed-20261029.json'}:
+            'benchmarks/a733-packed-20261029.json', 'benchmarks/coreml-m1max-20261029.json',
+            'benchmarks/a733-proof-cache-20261029.json'}:
         return True
     if relative.suffix.lower() in BLOCKED_SUFFIXES or '__pycache__' in relative.parts:
         return False
@@ -41,7 +52,11 @@ def allowed(relative: Path) -> bool:
                 (parts[1] == 'licenses' and relative.suffix in {'.txt', '.md'}))
     if parts[0] == 'docs':
         return relative.suffix == '.md'
-    return name in {'examples/config.template.json', 'examples/economics.synthetic.json'}
+    if parts[0] == 'native-build':
+        return name in NATIVE_BUILD_FILES
+    if parts[:2] == ('experiments', 'coreml_prl'):
+        return name in COREML_SOURCE_FILES
+    return name in {'examples/config.template.json', 'examples/economics.synthetic.json', 'examples/devices.synthetic.json'}
 
 
 def assert_public_text(name: str, data: bytes):

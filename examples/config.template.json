@@ -1,4 +1,5 @@
 {
+  "backend_id": "a733-viplite-v2-f32-256",
   "hostname": "REPLACE_WITH_TARGET_HOSTNAME",
   "device_confirmed": false,
   "account": "REPLACE_WITH_YOUR_PUBLIC_PRL_ADDRESS",

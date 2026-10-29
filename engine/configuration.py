@@ -8,6 +8,7 @@ import platform
 import re
 import socket
 import subprocess
+from engine.backend.selection import DEFAULT_BACKEND_ID, require_backend
 
 MODEL_SHA256 = 'e0ad42a6e40b4e675d95bce537c9ca45bd1bb984d23e45b4bbf5d3fd16537e93'
 NATIVE_LIBRARIES = ('libprl_npu.so', 'libpearl_prep.so', 'libpearl_edge_proof.so')
@@ -31,6 +32,7 @@ def validate_config(cfg, hardware=False):
     if not isinstance(cfg, dict):
         raise ValueError('Configuration must be a JSON object')
     result = dict(cfg)
+    require_backend(result.setdefault('backend_id', DEFAULT_BACKEND_ID))
     if result.get('device_confirmed') is not True:
         raise ValueError('device_confirmed must explicitly be true after identifying the target')
     if not isinstance(result.get('hostname'), str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,252}', result['hostname']):

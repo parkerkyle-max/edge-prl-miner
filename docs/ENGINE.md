@@ -112,6 +112,13 @@ exact NPU model/runtime and fresh hardware proof gates still apply.
 
 ## Running a bounded experiment
 
+`backend_id` explicitly selects an implemented backend. Existing configurations
+without the field retain the A733 backend; new templates name
+`a733-viplite-v2-f32-256`. All other identifiers are refused before device reads
+or SDK loading. `engine/backend/selection.py` defines the exact scan contract;
+the compatibility catalog describes research status and cannot enable a driver.
+Read-only `devices` discovery never replaces the existing hardware/proof gates.
+
 From the project root on the target, after providing a configuration:
 
 ```sh

@@ -1,5 +1,14 @@
 # Experimental release milestones
 
+The current portability update adds a ten-family compatibility catalog,
+read-only discovery, an explicit executable-backend contract and rejection of
+unimplemented backends. Only A733 has a mining implementation; the other entries
+are research candidates. See [Compatibility](COMPATIBILITY.md).
+
+The first measured hot-path optimization and profiling counters are described
+in [Performance](PERFORMANCE.md). Machine-readable project facts, the fee-support
+request and evidence limits live in `../project-metadata.json` and `../llms.txt`.
+
 1. **Standalone fixed-model source — initial extraction complete.** The backend
    retains exact numerical/proof checks and correlated pool submit responses.
    Runtime mining does not depend on a remote Windows/WSL model compiler.

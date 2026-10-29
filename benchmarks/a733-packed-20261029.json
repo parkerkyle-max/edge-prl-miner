@@ -1,0 +1,98 @@
+{
+  "schema": "edge-prl-sanitized-benchmark-v1",
+  "date_utc": "2026-10-29",
+  "device_class": "qualified 4 GB Allwinner A733 / VIPLite v2 Linux AArch64",
+  "baseline_commit": "8c7bdc390dc4f8db8db7312e411846f808beccb4",
+  "tested_source_archive_sha256": "a8a4aff2504e6f5634bc5716a0f2812cc6bd9fa02b71374f53980bb798e1097b",
+  "engine_change_after_trial": "One packed_candidates docstring clarified; executable statements unchanged",
+  "comparison": {
+    "order": "ABBAABBA",
+    "scans_per_block": 8,
+    "scans_per_implementation": 32,
+    "fixed_prepared_input": true,
+    "same_native_model_and_libraries": true,
+    "full_hash_and_hit_buffers_equal": true,
+    "timing_scope": "native scan plus Python adapter and candidate filtering, excluding preparation/proofs/network",
+    "summary": {
+      "baseline": {
+        "effective_scan_gmac_s": 0.92465533488476,
+        "mean_thread_cpu_ms": 43.9865894375,
+        "mean_wall_ms": 290.30866515625,
+        "scans": 32,
+        "steady_mean_wall_ms": 289.2153190357143
+      },
+      "candidate": {
+        "effective_scan_gmac_s": 0.9327751415110396,
+        "mean_thread_cpu_ms": 40.8173748125,
+        "mean_wall_ms": 287.78152853125,
+        "scans": 32,
+        "steady_mean_wall_ms": 286.68315671428576
+      }
+    },
+    "block_mean_ms": {
+      "baseline": [
+        288.934728,
+        292.49031325,
+        291.7742225,
+        288.035396875
+      ],
+      "candidate": [
+        288.585924625,
+        288.308434125,
+        288.597419375,
+        285.634336
+      ]
+    },
+    "observed_scan_throughput_increase_fraction": 0.008781441386796818,
+    "observed_scan_thread_cpu_reduction_fraction": 0.07204956477708047
+  },
+  "live_trial": {
+    "runtime_limit_seconds": 180,
+    "dev_fee_percent": 0,
+    "independent_reference_hashes": 64,
+    "official_proofs": 6,
+    "accepted_replies": 24,
+    "recorded_rejected_replies": 0,
+    "independent_pool_worker_observed": true,
+    "maximum_sampled_temperature_c": 66.906,
+    "owned_processes_remaining": 0,
+    "cpu_miner_same_process": true,
+    "cpu_miner_rolling_hps_before": 297.8,
+    "cpu_miner_rolling_hps_after": 281.0,
+    "phase_timings": {
+      "calls": {
+        "candidate_filter": 456,
+        "job_prepare": 6,
+        "native_scan_and_adapter": 461,
+        "npu_initialize": 1,
+        "proof_build": 24,
+        "proof_verify": 24,
+        "submit_including_verify": 24
+      },
+      "native_cumulative_profile": {
+        "driver_wall_ns": 116054837095,
+        "scans": 461,
+        "thread_cpu_ns": 18299433423,
+        "wall_ns": 132519137703
+      },
+      "scope": "Current process/role only; timers overlap as documented; not NPU-only hashrate or revenue",
+      "seconds": {
+        "candidate_filter": 0.114339102,
+        "job_prepare": 13.080737511,
+        "native_scan_and_adapter": 132.842041212,
+        "npu_initialize": 0.016575642,
+        "proof_build": 24.944670671,
+        "proof_verify": 1.077410325,
+        "submit_including_verify": 1.353135544
+      }
+    }
+  },
+  "limitations": {
+    "fee_collection_validated": false,
+    "other_npu_families_validated": false,
+    "long_term_stability_established": false,
+    "new_wall_power_measured": false,
+    "positive_combined_income_established": false,
+    "withdrawal_established": false
+  }
+}

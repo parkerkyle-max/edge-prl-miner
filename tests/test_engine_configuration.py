@@ -28,7 +28,7 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_format_check_does_not_read_device_or_open_network(self):
         with patch.object(Path,'read_text',side_effect=AssertionError('file read')),patch.object(Path,'read_bytes',side_effect=AssertionError('file read')):
-            self.assertEqual(validate_config(fixture()),fixture())
+            self.assertEqual(validate_config(fixture()),dict(fixture(),backend_id='a733-viplite-v2-f32-256'))
 
     def test_explicit_fields_and_exact_types(self):
         bad_values={'device_confirmed':[False,1,None], 'dev_fee':[2,False,'0'], 'cpu_threads':[2,True,0],

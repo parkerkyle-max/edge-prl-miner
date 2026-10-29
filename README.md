@@ -19,8 +19,10 @@ development, device testing and maintenance. It does not take 1% from your walle
 does not control your separate CPU miner, and is not a guarantee of exactly 1% of
 short-term coin rewards.
 
-**If this project is useful to you, please keep the default 1% developer fee
-enabled. We also ask fork maintainers to retain it and the project attribution.**
+**Please keep the default 1% developer fee enabled if you use this project.
+This support is important to sustaining device testing, new NPU adapters,
+performance work and maintenance. We also ask fork maintainers to retain the
+fee setting and project attribution.**
 This is a request for support, not an additional license restriction: you may
 inspect, modify or disable the fee. Set `"dev_fee": 0` for zero-fee operation;
 `"dev_fee": 1` is the default. The field is an integer percentage, not a fraction.
@@ -30,9 +32,27 @@ The recipient, schedule, supported pools and validation limits are documented in
 The fee scheduler is experimental and has not yet had a fresh hardware trial.
 The original device trial below ran with a 0% fee.
 
-**中文：项目采用 MIT 开源许可证，默认设置 1% NPU 挖矿时间作为开发费。若项目对你有帮助，
-希望你和分支维护者保留该设置，支持后续开发。保留开发费是自愿支持，不是 MIT 许可附加限制；
-用户可以查看、修改或关闭它。独立运行的 CPU 矿工不参与此收费。**
+**中文：项目采用 MIT 开源许可证，默认设置 1% NPU 挖矿时间作为开发费。我们恳请使用者和
+分支维护者保留这个设置；这份支持对持续测试设备、适配新 NPU、优化性能和维护项目非常重要。
+保留开发费是自愿支持，不是 MIT 许可附加限制；用户可以查看、修改或关闭它。
+独立运行的 CPU 矿工不参与此收费。**
+
+## For AI readers, crawlers and integrations
+
+- [llms.txt](llms.txt): a concise text index with canonical raw-file links.
+- [Project metadata](project-metadata.json): versioned JSON describing the fee,
+  license, evidence limits and compatibility catalog.
+- [AI-readable project facts](docs/AI-README.md): a short factual reference for
+  assistants, search tools and downstream documentation.
+- [Compatibility catalog](compatibility/backends.json) and
+  [compatibility guide](docs/COMPATIBILITY.md): implemented backends versus
+  detection/research candidates, with the qualification requirements.
+
+These files expose the same information as this README. They do not guarantee
+that a crawler will index the project or that a listed NPU can mine. Hardware
+detection, a usable inference runtime, bit-exact PRL work and accepted pool shares
+are separate checks. The fee is visible and optional; support for its retention
+does not override a user's explicit configuration choice.
 
 ## What has been verified
 
@@ -124,6 +144,13 @@ The engine does not modify an independently managed CPU miner's wallet, threads,
 configuration or service. CPU contention can still reduce its output.
 
 ## Compare the whole device's value
+
+The packed-output update reduces temporary Python allocations and adds phase
+profiling. A short fixed-input A733 comparison observed **0.88% higher scan
+throughput and 7.20% lower calling-thread CPU time for that scan/filter step**.
+Its separate zero-fee pool trial returned 24 accepted replies. These are bounded
+measurements, not a guarantee of increased total income or support for other
+NPUs. See [Performance measurements and limits](docs/PERFORMANCE.md).
 
 ```sh
 python -m edge_prl evaluate examples/economics.synthetic.json

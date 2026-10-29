@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-29",
+  "scope": "Non-exhaustive adapter roadmap and read-only discovery registry, not a claim of universal NPU mining support.",
+  "supported_live_scope": "Only the existing qualified 4 GB A733 backend is implemented; historical real-pool validation used zero developer fee. Fresh device/model/code validation is always required.",
+  "common_acceptance_requirements": [
+    "Exact PRL outputs, full reference hashes and official proof verification, not approximate ML accuracy",
+    "Explicit input layout, signedness, accumulation range, overflow and rounding semantics",
+    "Both changing job inputs supported or measured and bounded recompilation overhead",
+    "Actual NPU execution demonstrated; CPU fallback must not be reported as NPU work",
+    "Bounded ownership, stale-job cancellation, thermal checks and device-specific safety validation",
+    "Real correlated pool accepted shares and separately measured CPU impact before a compatibility claim",
+    "Same-device total value and wall-power measurement before an efficiency or profit claim"
+  ],
+  "backends": [
+    {
+      "id": "a733-viplite-v2-f32-256",
+      "name": "Allwinner A733 / VIPLite v2",
+      "implementation_status": "implemented_experimental",
+      "supported_live": true,
+      "qualified_scope": "Linux AArch64, existing exact 4 GB A733 checks, pinned FP32 256 model and native ABI",
+      "historical_pool_acceptance": "Earlier zero-fee source revision only; new fee scheduler unvalidated on hardware",
+      "capabilities_required": ["Pinned exact FP32 partial products", "VIPLite v2 CID and native ABI checks", "Fresh model/code/proof gate"],
+      "primary_sources": ["https://github.com/orangepi-xunlong/linux-orangepi/blob/orange-pi-6.6-sun60iw2/arch/arm64/boot/dts/allwinner/sun60i-a733-orangepi-4-pro.dts"]
+    },
+    {
+      "id": "rockchip-rk3588-rknn",
+      "name": "Rockchip RK3588 / RKNN",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact per-chip matmul and accumulator validation", "RKNN model/runtime/driver agreement", "Measure two-input update and layout conversion costs"],
+      "primary_sources": ["https://github.com/airockchip/rknn-toolkit2"]
+    },
+    {
+      "id": "rockchip-rk356x-rknn",
+      "name": "Rockchip RK3562/RK3566/RK3568 / RKNN",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Independent per-chip arithmetic and layout validation", "No assumption that an RK3588 kernel is compatible", "Bounded compile and transfer overhead"],
+      "primary_sources": ["https://github.com/airockchip/rknn-toolkit2"]
+    },
+    {
+      "id": "ascend-cann",
+      "name": "Huawei Ascend / CANN",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Per-SoC CANN kernel adapter and licenses", "Exact cube/accumulator arithmetic", "Fresh upstream and local proof validation"],
+      "primary_sources": ["https://github.com/Ascend/samples"]
+    },
+    {
+      "id": "intel-openvino-npu",
+      "name": "Intel NPU / OpenVINO",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact-output construction despite lower-precision hardware arithmetic", "Explicit NPU execution placement", "Driver/compiler/model cache identity and invalidation"],
+      "primary_sources": ["https://docs.openvino.ai/2026/openvino-workflow/running-inference/inference-devices-and-modes/npu-device.html"]
+    },
+    {
+      "id": "amd-ryzen-ai-xdna",
+      "name": "AMD Ryzen AI / XDNA",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact-output construction without lossy quantization", "Explicit NPU execution instead of CPU/GPU fallback", "Per-generation runtime and compiler adapter"],
+      "primary_sources": ["https://quark.docs.amd.com/latest/supported_accelerators/ryzenai/index.html"]
+    },
+    {
+      "id": "qualcomm-qnn-htp",
+      "name": "Qualcomm HTP / QNN",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact arithmetic proven for target HTP generation", "Matching QNN context and architecture", "Verify actual HTP placement; RPC node alone is insufficient"],
+      "primary_sources": ["https://docs.qualcomm.com/bundle/publicresource/topics/80-63442-10/htp_backend.html"]
+    },
+    {
+      "id": "apple-coreml-ane",
+      "name": "Apple Neural Engine / Core ML",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact-output model and two-input behavior", "Measure actual compute-unit placement rather than requested preference", "Measure graph compilation and fallback costs"],
+      "primary_sources": ["https://developer.apple.com/documentation/coreml/analyzing-a-core-ml-model-s-performance-in-xcode"]
+    },
+    {
+      "id": "hailo-hailort",
+      "name": "Hailo / HailoRT",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact-output graph proven on the selected Hailo architecture", "Matching compiled HEF and runtime", "Measure mutable job inputs and host transfer cost"],
+      "primary_sources": ["https://github.com/hailo-ai/hailort", "https://github.com/hailo-ai/hailo_model_zoo/blob/master/docs/GETTING_STARTED.rst"]
+    },
+    {
+      "id": "coral-edgetpu",
+      "name": "Google Coral Edge TPU",
+      "implementation_status": "research_only",
+      "supported_live": false,
+      "capabilities_required": ["Exact-output construction within fully 8-bit quantized TFLite operator restrictions", "Verify compiled-device operations and CPU fallback", "Measure compiler, mutable input and USB/PCIe transfer cost"],
+      "primary_sources": ["https://coral.ai/docs/edgetpu/models-intro/"]
+    }
+  ]
+}

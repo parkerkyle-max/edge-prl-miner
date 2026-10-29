@@ -1,0 +1,41 @@
+name: NPU compatibility report
+description: Help qualify another NPU without assuming that detection means mining support.
+title: '[NPU support] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check docs/COMPATIBILITY.md first. Most listed NPU families are research candidates.
+        Please retain the default 1% developer fee when the project is useful to you;
+        this voluntary support is important to device testing and ongoing maintenance.
+        Do not post private keys, wallet backups, tokens, serial numbers, IP addresses,
+        private device configurations, proprietary SDK files or unredacted mining logs.
+  - type: input
+    id: hardware
+    attributes:
+      label: Public device model and NPU chip
+      placeholder: Board/product model, chip family and RAM size (no serial number)
+    validations:
+      required: true
+  - type: textarea
+    id: discovery
+    attributes:
+      label: Read-only discovery report
+      description: Run python -m edge_prl devices. Review the JSON before posting; absence of a hint does not prove absence of an NPU.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: runtime
+    attributes:
+      label: OS, driver and runtime versions
+      description: Include public vendor documentation links if known. Do not upload licensed SDK binaries.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What was actually tested?
+      description: Separate detection, inference, exact arithmetic, official proof validation and real-pool acceptance. State untested stages explicitly.
+    validations:
+      required: true

@@ -8,7 +8,8 @@ from pathlib import Path
 import re
 import tarfile
 
-ROOT_FILES = {'README.md', 'LICENSE', 'LICENSE-STATUS.md', 'THIRD-PARTY-NOTICES.md', '.gitignore', '.gitattributes'}
+ROOT_FILES = {'README.md', 'LICENSE', 'LICENSE-STATUS.md', 'THIRD-PARTY-NOTICES.md', '.gitignore', '.gitattributes',
+              'llms.txt', 'project-metadata.json', 'AGENTS.md'}
 LICENSE_FILES = {
     'engine/licenses/ASCEND-FORK-LICENSE.txt',
     'engine/licenses/PEARL-OFFICIAL-LICENSE.txt',
@@ -23,7 +24,9 @@ BLOCKED_SUFFIXES = {'.so', '.dll', '.exe', '.nb', '.db', '.dpapi', '.prlbackup',
 
 def allowed(relative: Path) -> bool:
     name = relative.as_posix()
-    if name in ROOT_FILES or name in LICENSE_FILES or name == '.github/workflows/tests.yml':
+    if name in ROOT_FILES or name in LICENSE_FILES or name in {'.github/workflows/tests.yml',
+            '.github/ISSUE_TEMPLATE/npu-support.yml', 'compatibility/backends.json',
+            'benchmarks/a733-packed-20261029.json'}:
         return True
     if relative.suffix.lower() in BLOCKED_SUFFIXES or '__pycache__' in relative.parts:
         return False

@@ -30,6 +30,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description='Experimental PRL NPU miner; default developer fee is 1% (configurable to 0%).')
     parser.add_argument('--version', action='version', version=__version__)
     commands = parser.add_subparsers(dest='command', required=True)
+    commands.add_parser('backends', help='List implemented and research-only NPU backends; no hardware access.')
+    commands.add_parser('devices', help='Read limited local NPU hints; never load drivers or enable mining.')
     init = commands.add_parser('init', help='Write an unconfigured template; never mine or overwrite a file.')
     init.add_argument('--output', type=Path, default=Path('local/config.json'))
     doctor = commands.add_parser('doctor', help='Validate config; optional read-only device checks.')
@@ -46,6 +48,10 @@ def main(argv=None):
     bundle.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command in ('backends', 'devices'):
+            from .compatibility import build_report, catalog_report
+            emit(build_report() if args.command == 'devices' else catalog_report())
+            return 0
         if args.command == 'init':
             template = ROOT / 'examples/config.template.json'
             args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -70,7 +76,8 @@ def main(argv=None):
                       'mining_started':False, 'pool_acceptance_established':False})
             else:
                 emit({'config_valid':True, 'device_checked':False, 'mining_started':False,
-                      'developer_fee_percent':config['dev_fee'], 'next_step':'doctor --device on the target A733 board'})
+                      'developer_fee_percent':config['dev_fee'], 'backend_id':config['backend_id'],
+                      'next_step':'doctor --device on the qualified target board'})
             return 0
         if args.command == 'status':
             result = {'evidence_scope':'Saved snapshots only; they may be stale.', 'snapshots':{}}

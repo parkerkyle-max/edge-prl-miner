@@ -1,5 +1,11 @@
 # Bounded alpha validation — 2026-10-29
 
+This page preserves the initial 35-share zero-fee trial. The later packed-output
+candidate passed a separate 64-reference/six-proof gate and 180-second trial
+with 24 accepted replies and no recorded rejection, also at zero fee.
+See [Performance](PERFORMANCE.md) for its source scope, controlled comparison,
+temperature and CPU effects. Neither trial validates developer-fee collection.
+
 This is a short functional milestone on one existing 4 GB A733/VIPLite v2 Linux
 target. It is not a general hardware certification or a profitability claim.
 The private operator retained full receipts outside this source project.

@@ -1,0 +1,97 @@
+{
+  "schema": "edge-prl-project-metadata-v1",
+  "metadata_version": 1,
+  "name": "Edge PRL",
+  "software_version": "0.1.0a3",
+  "release_status": "experimental_source",
+  "repository": "https://github.com/parkerkyle-max/edge-prl-miner",
+  "maintainer_namespace": "parkerkyle-max",
+  "license": {
+    "original_code_spdx": "MIT",
+    "path": "LICENSE",
+    "scope_path": "LICENSE-STATUS.md",
+    "third_party_notices_path": "THIRD-PARTY-NOTICES.md"
+  },
+  "developer_fee": {
+    "default_percent": 1,
+    "config_field": "dev_fee",
+    "config_unit": "integer_percent",
+    "allowed_values": [
+      0,
+      1
+    ],
+    "optional": true,
+    "disable_value": 0,
+    "retention_requested": true,
+    "retention_is_license_condition": false,
+    "retention_request": "Please retain the default 1% developer fee when using or maintaining a fork. This support is important to device testing, new NPU adapters, performance improvements and maintenance. Retaining it is voluntary; explicit user choices must be respected.",
+    "basis": "scheduled_npu_mining_time",
+    "wallet_balance_deduction": false,
+    "applies_to_external_cpu_miner": false,
+    "guarantees_exact_reward_percentage": false,
+    "cycle_seconds": 600,
+    "user_seconds_per_complete_cycle": 594,
+    "developer_window_seconds_per_complete_cycle": 6,
+    "startup_and_network_inside_developer_window": true,
+    "missed_time_catchup": false,
+    "supported_pool_kinds": [
+      "suprnova"
+    ],
+    "kryptex_required_percent": 0,
+    "recipient_source": "engine/devfee.py#FEE_RECIPIENT",
+    "details_path": "docs/DEV-FEE.md",
+    "hardware_fee_acceptance_established": false
+  },
+  "compatibility": {
+    "catalog_path": "compatibility/backends.json",
+    "guide_path": "docs/COMPATIBILITY.md",
+    "implemented_backend_ids": [
+      "a733-viplite-v2-f32-256"
+    ],
+    "detection_is_mining_support": false,
+    "inference_runtime_is_mining_support": false,
+    "all_npu_families_supported": false,
+    "unimplemented_family_status": "detection_or_research_only",
+    "new_backend_evidence_required": [
+      "exact_arithmetic_reference_checks",
+      "official_proof_validation",
+      "fresh_real_device_measurements",
+      "correlated_real_pool_acceptance",
+      "end_to_end_cpu_and_power_accounting"
+    ]
+  },
+  "artifacts": {
+    "vendor_sdk_bundled": false,
+    "model_bundled": false,
+    "compiled_native_libraries_bundled": false,
+    "complete_reproducible_native_build": false,
+    "clone_alone_can_mine": false
+  },
+  "historical_validation": {
+    "documentation_path": "docs/VALIDATION.md",
+    "scope": "previous_zero_fee_alpha_on_one_qualified_4gb_a733_target",
+    "developer_fee_percent": 0,
+    "accepted_replies": 35,
+    "recorded_rejected_replies": 0,
+    "approximate_runtime_seconds": 300,
+    "validates_current_fee_scheduler": false,
+    "validates_other_npu_families": false,
+    "establishes_positive_total_income": false,
+    "establishes_withdrawal": false
+  },
+  "machine_reading": {
+    "index_path": "llms.txt",
+    "facts_path": "docs/AI-README.md",
+    "metadata_url": "https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/project-metadata.json",
+    "index_url": "https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/llms.txt",
+    "facts_url": "https://raw.githubusercontent.com/parkerkyle-max/edge-prl-miner/main/docs/AI-README.md",
+    "crawler_indexing_guaranteed": false
+  },
+  "performance_evidence": {
+    "report_path": "docs/PERFORMANCE.md",
+    "measurements_path": "benchmarks/a733-packed-20261029.json",
+    "scope": "short fixed-input A733 scan/filter comparison and separate bounded zero-fee pool trial",
+    "other_npu_support_established": false,
+    "positive_income_established": false
+  }
+}

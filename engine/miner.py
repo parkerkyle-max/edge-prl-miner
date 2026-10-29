@@ -38,6 +38,52 @@ def candidate_offsets(width):
     return tuple((rb*64+i,cb*64) for rb in range(subtiles) for cb in range(subtiles) for i in range(32))
 
 
+def packed_candidates(packed,target):
+    """Exact inclusive comparison; allocate hashes only for MSB-filter survivors.
+
+    A hash's final byte is its most significant byte in the protocol's little-
+    endian representation. Rejecting a larger byte is exact, not an approximate
+    target. Surviving values still receive the complete 256-bit comparison.
+    """
+    if not isinstance(packed,bytes) or not packed or len(packed)%32:
+        raise ValueError('Expected nonempty immutable packed 32-byte hashes')
+    if type(target) is not int or not 0<=target<=MAX256:
+        raise ValueError('Expected unsigned 256-bit target')
+    high=target>>248
+    hits=[]
+    for last in range(31,len(packed),32):
+        if packed[last]>high:continue
+        jackpot=packed[last-31:last+1]
+        if int.from_bytes(jackpot,'little')<=target:
+            hits.append((last//32,jackpot))
+    return hits
+
+
+class PhaseTimings:
+    """Cumulative process-local timings; nested driver/verification fields overlap."""
+    NAMES=('npu_initialize','job_prepare','native_scan_and_adapter','candidate_filter',
+           'proof_build','proof_verify','submit_including_verify')
+    def __init__(self):
+        self.nanoseconds={name:0 for name in self.NAMES}
+        self.calls={name:0 for name in self.NAMES}
+        self.native={'scans':0,'wall_ns':0,'thread_cpu_ns':0,'driver_wall_ns':0}
+    def add(self,name,elapsed_ns):
+        if name not in self.nanoseconds or type(elapsed_ns) is not int or elapsed_ns<0:
+            raise ValueError('Invalid phase timing')
+        self.nanoseconds[name]+=elapsed_ns;self.calls[name]+=1
+    def add_native(self,profile):
+        if profile is None:return
+        for key in ('wall_ns','thread_cpu_ns','driver_wall_ns'):
+            if type(profile.get(key)) is not int or profile[key]<0:
+                raise RuntimeError('Invalid native timing profile')
+        self.native['scans']+=1
+        for key in ('wall_ns','thread_cpu_ns','driver_wall_ns'):self.native[key]+=profile[key]
+    def to_dict(self):
+        return {'scope':'Current process/role only; timers overlap as documented; not NPU-only hashrate or revenue',
+                'seconds':{key:value/1e9 for key,value in self.nanoseconds.items()},
+                'calls':dict(self.calls),'native_cumulative_profile':dict(self.native)}
+
+
 def candidate_index(width,row_offset,col_offset):
     if (type(width) is not int or width not in (64,128,256) or
         type(row_offset) is not int or type(col_offset) is not int or
@@ -89,7 +135,7 @@ class NPU:
         if model_sha256 is not None:cfg['model_sha256']=model_sha256
         spec=model_spec(cfg)
         self.width=spec['width'];self.variant=spec['variant'];self.candidate_offsets=candidate_offsets(self.width)
-        self.batch=None;self.ctx=None
+        self.batch=None;self.ctx=None;self.last_profile=None
         if self.width>64:
             path=BASE/'backend/batch_backend.py'
             module_spec=importlib.util.spec_from_file_location('prl_release_batch_backend',path)
@@ -110,16 +156,25 @@ class NPU:
         value=self.lib.prl_last_error();return value.decode(errors='replace') if value else 'unknown NPU error'
     def scan(self,prepared,row_base,col_base):
         if self.batch is not None:
-            hashes,profile=self.batch.scan(prepared,row_base,col_base)
-            macs=profile['completed_macs']
-            if len(hashes)!=len(self.candidate_offsets) or any(not isinstance(h,bytes) or len(h)!=32 for h in hashes) or macs!=self.width*self.width*4096:
-                raise RuntimeError('Invalid batched NPU output/count')
-            return hashes,macs
+            packed,macs=self.scan_packed(prepared,row_base,col_base)
+            return [packed[offset:offset+32] for offset in range(0,len(packed),32)],macs
         output=(C.c_ubyte*1024)();commit=(C.c_ubyte*32).from_buffer_copy(prepared.commit_a);macs=C.c_uint64()
         result=self.lib.prl_scan_tile(self.ctx,C.cast(prepared.a_noised,C.c_void_p),prepared.m*4096,C.cast(prepared.b_noised,C.c_void_p),4096*prepared.n,prepared.m,prepared.n,4096,row_base,col_base,commit,output,C.byref(macs))
         if result!=0:raise RuntimeError(self.error())
         if macs.value!=64*64*4096:raise RuntimeError('Invalid NPU work count')
         return [bytes(output[i*32:(i+1)*32]) for i in range(32)],macs.value
+    def scan_packed(self,prepared,row_base,col_base):
+        if self.batch is None:
+            hashes,macs=self.scan(prepared,row_base,col_base)
+            self.last_profile=None
+            return b''.join(hashes),macs
+        packed,profile=self.batch.scan_packed(prepared,row_base,col_base)
+        macs=profile['completed_macs']
+        if (not isinstance(packed,bytes) or len(packed)!=len(self.candidate_offsets)*32 or
+                macs!=self.width*self.width*4096):
+            raise RuntimeError('Invalid packed NPU output/count')
+        self.last_profile=profile
+        return packed,macs
     def close(self):
         if self.batch is not None:self.batch.close();self.batch=None;return
         if self.ctx:self.lib.prl_destroy(self.ctx);self.ctx=None
@@ -237,6 +292,7 @@ def live(cfg,role='user',phase_deadline=None):
     emit=logger_for(cfg,role);runtime=Path(cfg['runtime_dir']);runtime.mkdir(parents=True,exist_ok=True)
     alive=True;prepared=None;prepared_job=None;pending_verification=None;npu=None;failed_error=None
     started=time.monotonic();last_report=0.;interval_started=started;interval_macs=0;total_macs=0;stale_macs=0;scanned_tiles=0;rounds=0
+    timings=PhaseTimings();process_cpu_started=time.process_time()
     def interrupted(*unused):
         nonlocal alive
         alive=False
@@ -245,7 +301,9 @@ def live(cfg,role='user',phase_deadline=None):
         if pending_verification is None or prepared_job!=job:return False
         expected,proof_sha=pending_verification
         if hashlib.sha256(proof).hexdigest()!=proof_sha:return False
-        result=prepared.verify(proof,job.nbits_override,expected_jackpot=expected)
+        tick=time.perf_counter_ns()
+        try:result=prepared.verify(proof,job.nbits_override,expected_jackpot=expected)
+        finally:timings.add('proof_verify',time.perf_counter_ns()-tick)
         emit('local_real_target_verification',job_token=job.token,result=result)
         return result.get('valid') is True
     client=make_client(cfg,verify,emit,role,phase_deadline)
@@ -254,12 +312,16 @@ def live(cfg,role='user',phase_deadline=None):
         nonlocal last_report,interval_started,interval_macs
         now=time.monotonic();stats=client.status()
         value={'at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'state':state,'worker':connection_cfg['worker'],'account':connection_cfg['account'],'mining_role':role,'host':socket.gethostname(),'pool':stats,'job':prepared_job.to_envelope() if prepared_job else None,'raw_NPU_MACs':total_macs,'stale_NPU_MACs':stale_macs,'effective_logical_MACs':total_macs-stale_macs,'effective_logical_GMAC_per_second':(total_macs-stale_macs)/max(.001,now-started)/1e9,'tile_hashes_scanned':scanned_tiles,'prepared_rounds':rounds,'raw_NPU_MAC_per_second_since_start':total_macs/max(.001,now-started),'interval_raw_NPU_MAC_per_second':interval_macs/max(.001,now-interval_started),'npu_width':npu.width if npu else None,'npu_variant':npu.variant if npu else None,'scope':'Current role/session only; accepted share count only from matching mining.submit responses','dev_fee':cfg['dev_fee'],'developer_fee_policy':disclosure(cfg),**extra}
-        value.update(pid=os.getpid(),launch_token=os.environ.get('PRL_LAUNCH_TOKEN'))
+        value.update(pid=os.getpid(),launch_token=os.environ.get('PRL_LAUNCH_TOKEN'),
+                     phase_timings=timings.to_dict(),process_cpu_seconds=max(0,time.process_time()-process_cpu_started))
         atomic_json(runtime/'miner.json',value);last_report=now
         if now-interval_started>=30:
             emit('mining_status',status=value);interval_started=now;interval_macs=0
     try:
-        npu=configured_npu(cfg);client.start();status('WAITING_FOR_JOB')
+        tick=time.perf_counter_ns()
+        try:npu=configured_npu(cfg)
+        finally:timings.add('npu_initialize',time.perf_counter_ns()-tick)
+        client.start();status('WAITING_FOR_JOB')
         while alive:
             if time.monotonic()>=phase_deadline or time.monotonic()-started>=cfg['max_runtime_seconds']:
                 emit('runtime_or_phase_limit_reached');break
@@ -279,27 +341,39 @@ def live(cfg,role='user',phase_deadline=None):
                     prepared=None;gc.collect()
                 prepared_job=job;status('PREPARING_REAL_JOB')
                 if time.monotonic()>=phase_deadline:break
-                t=time.monotonic();prepared=PreparedJob(cfg['libdir'],job.header,seed32=os.urandom(32),m=job.config.m,n=job.config.n,cert_version=job.cert_version)
+                t=time.monotonic();tick=time.perf_counter_ns()
+                try:prepared=PreparedJob(cfg['libdir'],job.header,seed32=os.urandom(32),m=job.config.m,n=job.config.n,cert_version=job.cert_version)
+                finally:timings.add('job_prepare',time.perf_counter_ns()-tick)
                 if prepared.config52!=job.config_bytes:raise RuntimeError('Official config mismatch')
                 rounds+=1;emit('real_job_prepared',job_token=job.token,seconds=time.monotonic()-t,commit_a=prepared.commit_a.hex())
                 rowbase=0;colbase=0
                 if time.monotonic()>=phase_deadline or not client.is_current(job):continue
             if time.monotonic()>=phase_deadline:break
-            hashes,macs=npu.scan(prepared,rowbase,colbase)
+            tick=time.perf_counter_ns()
+            try:packed,macs=npu.scan_packed(prepared,rowbase,colbase)
+            finally:timings.add('native_scan_and_adapter',time.perf_counter_ns()-tick)
+            timings.add_native(npu.last_profile)
             total_macs+=macs;interval_macs+=macs
             if not client.is_current(job):stale_macs+=macs;continue
-            scanned_tiles+=len(hashes)
-            for tile_index,jackpot in enumerate(hashes):
-                if int.from_bytes(jackpot,'little')>job.scaled_target:continue
+            scanned_tiles+=len(packed)//32
+            tick=time.perf_counter_ns()
+            hits=packed_candidates(packed,job.scaled_target)
+            timings.add('candidate_filter',time.perf_counter_ns()-tick)
+            for tile_index,jackpot in hits:
                 if time.monotonic()>=phase_deadline or not client.is_current(job):break
                 dr,dc=npu.candidate_offsets[tile_index]
                 status('BUILDING_REAL_HIT_PROOF',hit_row=rowbase+dr,hit_col=colbase+dc)
                 if time.monotonic()>=phase_deadline:break
-                proof=prepared.build_proof(rowbase+dr,colbase+dc)
+                tick=time.perf_counter_ns()
+                try:proof=prepared.build_proof(rowbase+dr,colbase+dc)
+                finally:timings.add('proof_build',time.perf_counter_ns()-tick)
                 pending_verification=(jackpot,hashlib.sha256(proof).hexdigest())
+                tick=time.perf_counter_ns()
                 try:client.submit_proof(job,proof)
                 except StaleJob as exc:emit('stale_hit_not_submitted',reason=str(exc))
-                finally:pending_verification=None
+                finally:
+                    timings.add('submit_including_verify',time.perf_counter_ns()-tick)
+                    pending_verification=None
             rowbase,colbase=advance_scan(rowbase,colbase,prepared.m,prepared.n,npu.width)
             if rowbase>=prepared.m:
                 # A fresh seed creates new candidate work after complete matrix coverage.
